@@ -127,7 +127,7 @@ void saveParamCallback() {
 	Serial.println("[CALLBACK] saveParamCallback fired");
 
 	// Set web server port number to 80
-	 server = WiFiServer(80);
+	server = WiFiServer(80);
 }
 
 
@@ -148,7 +148,7 @@ String output19State = "off";
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-	
+
 
 
 	setlocale(LC_ALL, "");
@@ -207,17 +207,22 @@ void setup() {
 	// Set outputs to LOW
 	digitalWrite(LED_PIN, LOW);
 }
-
 // the loop function runs over and over again until power down or reset
 void loop() {
-	/*checkButton();
+	/*checkButton();*/
 
-	client->LoopFunc();*/
-	
+	client->LoopFunc();
+
+
+
+	String temperature = String(client->temperature);
+	String HumiditiGround = String(client->HumiditiGround);
+
 	if (server == NULL) {
 		server = WiFiServer(80);
 		Serial.println("Web Server Init");          // print a message out in the serial port
 		server.begin(80);
+
 	}
 	else {
 
@@ -257,36 +262,37 @@ void loop() {
 								digitalWrite(LED_PIN, LOW);
 							}
 
-
+							client.println("_Layout.cshtml");
 							// Display the HTML web page
-							client.println("<!DOCTYPE html><html>");
-							client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-							client.println("<link rel=\"icon\" href=\"data:,\">");
-							// CSS to style the on/off buttons 
-							// Feel free to change the background-color and font-size attributes to fit your preferences
-							client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-							client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
-							client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-							client.println(".button2 {background-color: #555555;}</style></head>");
-
-							// Web Page Heading
-							client.println("<body><h1>ESP32 Web Server</h1>");
-
-							// Display current state, and ON/OFF buttons for GPIO 19  
-							client.println("<p>GPIO 19 - State " + output19State + "</p>");
-							// If the output19State is off, it displays the ON button       
-							if (output19State == "off") {
-								client.println("<p><a href=\"/19/on\"><button class=\"button\">ON</button></a></p>");
-							}
-							else {
-								client.println("<p><a href=\"/19/off\"><button class=\"button button2\">OFF</button></a></p>");
-							}
+							//client.println("<!DOCTYPE html><html>");
+							//client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
+							//client.println("<link rel=\"icon\" href=\"data:,\">");
+							//// CSS to style the on/off buttons 
+							//// Feel free to change the background-color and font-size attributes to fit your preferences
+							//client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
+							//client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
+							//client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
+							//client.println(".button2 {background-color: #555555;}</style>");
 
 
-							client.println("</body></html>");
+							//// Web Page Heading
+							//client.println("<body><h1>ESP32 Web Server</h1>");
 
-							// The HTTP response ends with another blank line
-							client.println();
+							//// Display current state, and ON/OFF buttons for GPIO 19  
+							//client.println("<p>GPIO 19 - State " + output19State + "</p>");
+							//// If the output19State is off, it displays the ON button       
+							//if (output19State == "off") {
+							//	client.println("<p><a href=\"/19/on\"><button class=\"button\">ON</button></a></p>");
+							//}
+							//else {
+							//	client.println("<p><a href=\"/19/off\"><button class=\"button button2\">OFF</button></a></p>");
+							//}
+							//client.println("<table border='1'><tr><th>Temp</th><th>HumGr</th><th>Volt</th></tr>");
+							//client.println("<tr><td>" + temperature + "</td><td>" + HumiditiGround + "</td></tr></table>");
+							//client.println("</body></html>");
+
+							//// The HTTP response ends with another blank line
+							//client.println();
 							// Break out of the while loop
 							break;
 						}

@@ -24,6 +24,7 @@ BLERemoteCharacteristic* SensorBleClient::Test_CHARACTERISTIC = NULL;
 BLERemoteCharacteristic* SensorBleClient::Pressure_CHARACTERISTIC = NULL;
 
 
+
 SensorBleClient::SensorBleClient()
 {
 
@@ -124,7 +125,7 @@ bool SensorBleClient::connectToServer() {
 		Serial.print("Tempreture: ");
 
 		uint32_t tmp = Tempreture_CHARACTERISTIC->readUInt32();
-		float temperature = *((float*)&tmp);
+		temperature = *((float*)&tmp);
 		Serial.println(temperature);
 	}
 
@@ -136,7 +137,7 @@ bool SensorBleClient::connectToServer() {
 	{
 		Serial.print("HumiditiGround: ");
 		uint32_t HMG = HumiditiGround_CHARACTERISTIC->readUInt32();
-		float HumiditiGround = *((float*)&HMG);
+		HumiditiGround = *((float*)&HMG);
 		Serial.println(HumiditiGround);
 	}
 

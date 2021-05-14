@@ -51,6 +51,9 @@ public:
 		size_t length,
 		bool isNotify);
 
+	float temperature;
+	float HumiditiGround;
+
 	void LoopFunc();
 	bool connectToServer();
 };
