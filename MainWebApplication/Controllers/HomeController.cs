@@ -30,11 +30,11 @@ namespace MainWebApplication.Controllers
 
             if (IPAddress.TryParse(ipString, out IPAddress iPAddress))
             {
-                Ping ping = new Ping();
+               Ping ping = new Ping();
                var result = ping.Send(iPAddress);
 
-                if (result.Status==IPStatus.Success)
-                    return new JsonResult("SUccess");
+               if (result.Status==IPStatus.Success)
+                   return new JsonResult("SUccess");
 
             };
 
@@ -43,8 +43,25 @@ namespace MainWebApplication.Controllers
         }
 
         // todo
-        // GetServices(blehub)
+        //GetNodes(blehub)
+        public JsonResult GetNodes(BleHub bleHub)
+        {
+            bleHub.IpAddress = null; //как его получить
+            return new JsonResult("Nodes");
+        }
+        // GetServices(blehub,node)
+        public JsonResult GetServices(BleHub bleHub, Node node)
+        {
+            BleService bleService = new BleService();
+            return new JsonResult(bleService);
+        }
         // GetChannels(blehub,Service)
+        public JsonResult GetChannels(BleHub bleHub, BleService bleService)
+        {
+            DigitalChannel digitalChannel = new DigitalChannel();
+            AnalogChannel analogChannel = new AnalogChannel();
+            return new JsonResult("");
+        }
         // GetChannel(blehub,Service,channel)
         // GetChannelValue(blehub,Service,channel)
 
