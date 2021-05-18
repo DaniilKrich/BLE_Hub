@@ -58,7 +58,8 @@ namespace MainWebApplication.Controllers
         // GetServices(blehub,node)
         public JsonResult GetServices(int blehubID = 0, int nodeID = 0)
         {
-            //var bles1 = new BleServices() {
+            //var bles1 = new BleServices()
+            //{
 
             //new BleService()
             //{
@@ -85,25 +86,26 @@ namespace MainWebApplication.Controllers
             //    }
             //},
 
-                //new BleService()
-                //{
-                //    GUID = "wrwrwrrerwr",
-                //    Description = "test1",
-                //    Name = "bles1",
-                //    Channels = new List<Channel>()
-                //    {
-                //        new DigitalChannel(),
-                //        new AnalogChannel(),
-                //        new AnalogChannel()
-                //    }
-                //}
-                //};
+            //new BleService()
+            //{
+            //    GUID = "wrwrwrrerwr",
+            //    Description = "test1",
+            //    Name = "bles1",
+            //    Channels = new List<Channel>()
+            //    {
+            //        new DigitalChannel(),
+            //        new AnalogChannel(),
+            //        new AnalogChannel()
+            //    }
+            //}
+            //};
 
 
 
-               // BleServices bleServices = GetServices();
-            return new JsonResult(bleServices);
+            //BleServices bleServices = GetServices();
+            //return new JsonResult(bleServices);
             //return new JsonResult(bles1);
+            return null;
         }
         // GetChannels(blehub,Service)
         public JsonResult GetChannels(BleHub bleHub, BleService bleService)

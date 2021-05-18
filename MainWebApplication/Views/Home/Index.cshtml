@@ -2,19 +2,72 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-        <h1>Task List</h1>
-        <p id="msg">Current tasks:</p>
-        <ul>
-            <li class="list">Add visual styles</li>
-            <li class="list">Add light and dark themes</li>
-            <li>Enable switching the theme</li>
-        </ul>
-        <div>
-            <button id="mybtn" class="btn">Dark</button>
-        </div>
-        <script src="js/site.js"></script>
-        <noscript>You need to enable JavaScript to view the full site.</noscript>
+@*<div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+            <h1>Task List</h1>
+            <p id="msg">Current tasks:</p>
+            <ul>
+                <li class="list">Add visual styles</li>
+                <li class="list">Add light and dark themes</li>
+                <li>Enable switching the theme</li>
+            </ul>
+            <div>
+                <button id="mybtn" class="btn">Dark</button>
+            </div>
+            <script src="js/site.js"></script>
+            <noscript>You need to enable JavaScript to view the full site.</noscript>
+    </div>*@
+
+<div id="Tree">
+    <ul id="Root">
+        <li>
+            <span class="caret">Сервер</span>
+            <ul class="nested">
+                <li>
+                    <span class="caret hub">Концентратор 1</span>
+                    <ul class="nested">
+                        <li>
+                            <span class="caret BleSensor" data="полевое устройство">Полевое устройство 1</span>
+                            <ul class="nested">
+                                <li class="Characteristic" data="температура">Температура</li>
+                                <li class="Characteristic">Давление</li>
+                                <li class="Characteristic">Влажность</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="caret BleSensor" data="полевое устройство">Полевое устройство 2</span>
+                            <ul class="nested">
+                                <li class="Characteristic">Температура</li>
+                                <li class="Characteristic">Давление</li>
+                                <li class="Characteristic">Влажность</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <span class="caret BleSensor" data="полевое устройство">Полевое устройство 3</span>
+                            <ul class="nested">
+                                <li class="Characteristic">Температура</li>
+                                <li class="Characteristic">Давление</li>
+                                <li class="Characteristic">Влажность</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
+
+<div id="Action">
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy
+    nibh euismod tincidunt ut lacreet dolore magna aliguam erat volutpat. Ut wisis
+    enim ad minim veniam, quis nostrud exerci tution ullamcorper suscipit lobortis
+    nisl ut aliquip ex ea commodo consequat.
+</div>
+
+<div id="Interface">
+    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy
+    nibh euismod tincidunt ut lacreet dolore magna aliguam erat volutpat. Ut wisis
+    enim ad minim veniam, quis nostrud exerci tution ullamcorper suscipit lobortis
+    nisl ut aliquip ex ea commodo consequat.
 </div>
