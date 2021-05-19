@@ -149,7 +149,7 @@ body {
     border: solid;
 }
 
-#Action {
+#Actions {
     display: block;
     float: left;
     height: 100%;
@@ -182,6 +182,15 @@ ul, #Root {
     cursor: pointer;
 }
 
+.hub{
+
+}
+.Action {
+    height: 40px;
+    width: auto;
+    border: 1px solid;
+    text-align:center;
+}
 
 
 /* Style the caret/arrow */
@@ -197,6 +206,8 @@ ul, #Root {
         display: inline-block;
         margin-right: 6px;
     }
+
+ 
 
 /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
 .caret-down::before {

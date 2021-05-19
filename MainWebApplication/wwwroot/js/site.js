@@ -23,7 +23,7 @@ window.addEventListener('load', function () {
         });
     }
     var root = document.getElementById("Root");
-    var action = document.getElementById("Action");
+    var actions = document.getElementById("Actions");
     function reqListener() {
     }
     root.addEventListener("click", function (e) {
@@ -36,13 +36,13 @@ window.addEventListener('load', function () {
             xhr.open("get", "yourFile.txt", true);
             xhr.send();
             //xhr.setRequestHeader();
-            action.innerHTML = el.getAttribute('data');
+            actions.innerHTML = el.getAttribute('data');
         }
         if (el.className == 'Hub') {
-            action.innerHTML = el.getAttribute('data');
+            actions.innerHTML = el.getAttribute('data');
         }
         if (el.className == 'BleSensor') {
-            action.innerHTML = el.getAttribute('data');
+            actions.innerHTML = el.getAttribute('data');
         }
     });
 });

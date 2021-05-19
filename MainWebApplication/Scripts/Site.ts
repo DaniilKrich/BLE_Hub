@@ -30,7 +30,7 @@
     }
 
     var root: HTMLUListElement = document.getElementById("Root") as HTMLUListElement;
-    var action: HTMLDivElement = document.getElementById("Action") as HTMLDivElement;
+    var actions: HTMLDivElement = document.getElementById("Actions") as HTMLDivElement;
 
     function reqListener() {
 
@@ -52,13 +52,13 @@
             //xhr.setRequestHeader();
 
 
-            action.innerHTML = el.getAttribute('data');
+            actions.innerHTML = el.getAttribute('data');
         }
         if (el.className == 'Hub') {
-            action.innerHTML = el.getAttribute('data');
+            actions.innerHTML = el.getAttribute('data');
         }
         if (el.className == 'BleSensor'){
-            action.innerHTML = el.getAttribute('data');
+            actions.innerHTML = el.getAttribute('data');
         }
     });
 
