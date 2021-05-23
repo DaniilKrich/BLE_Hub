@@ -19,48 +19,25 @@
     //    console.log('current class name: ' + className);
     //});
 
-    var toggler = document.getElementsByClassName("caret");
-    var i;
+    //var toggler = document.getElementsByClassName("caret");
+    //var i;
 
-    for (i = 0; i < toggler.length; i++) {
-        toggler[i].addEventListener("click", function () {
-            this.parentElement.querySelector(".nested").classList.toggle("active");
-            this.classList.toggle("caret-down");
-        });
-    }
+    //for (i = 0; i < toggler.length; i++) {
+    //    toggler[i].addEventListener("click", function () {
+    //        this.parentElement.querySelector(".nested").classList.toggle("active");
+    //        this.classList.toggle("caret-down");
+    //    });
+    //}
+    var tree: HTMLDivElement = document.getElementById('Tree') as HTMLDivElement;
+    var root: MainTree = <MainTree>(<unknown> document.createElement('div'));
+    tree.innerHTML = '';
+    tree.appendChild(root);
 
-    var root: HTMLUListElement = document.getElementById("Root") as HTMLUListElement;
+    //root.Update();
+
     var actions: HTMLDivElement = document.getElementById("Actions") as HTMLDivElement;
 
-    function reqListener() {
 
-    }
-
-
-    root.addEventListener("click", (e) => {
-        if (e.target == null)
-            return;
-        var el = e.target as HTMLLIElement
-        
-        if (el.className == 'Characteristic') {
-
-            var xhr: XMLHttpRequest = new XMLHttpRequest();
-            xhr.onload = reqListener;
-            xhr.open("get", "yourFile.txt", true);
-            xhr.send();
-
-            //xhr.setRequestHeader();
-
-
-            actions.innerHTML = el.getAttribute('data');
-        }
-        if (el.className == 'Hub') {
-            actions.innerHTML = el.getAttribute('data');
-        }
-        if (el.className == 'BleSensor'){
-            actions.innerHTML = el.getAttribute('data');
-        }
-    });
-
+    
 
 });
