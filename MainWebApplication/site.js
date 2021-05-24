@@ -70,7 +70,6 @@ var MainTree = /** @class */ (function (_super) {
     __extends(MainTree, _super);
     function MainTree() {
         var _this = _super.call(this) || this;
-        _this.id = "Root";
         //this.addEventListener("click", (e) => {
         //    if (e.target == null)
         //        return;
@@ -167,11 +166,8 @@ window.addEventListener('load', function () {
     //        this.classList.toggle("caret-down");
     //    });
     //}
-    var tree = document.getElementById('Tree');
-    var root = document.createElement('div');
-    tree.innerHTML = '';
-    tree.appendChild(root);
-    //root.Update();
+    var root = document.getElementById("Root");
+    root.Update();
     var actions = document.getElementById("Actions");
 });
 //# sourceMappingURL=site.js.map
