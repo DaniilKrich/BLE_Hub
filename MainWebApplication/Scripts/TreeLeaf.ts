@@ -1,4 +1,5 @@
-﻿
+﻿/// <reference path="TreeElement.ts" />
+
 class TreeLeaf extends TreeElement {
     constructor(
     ) {
@@ -6,16 +7,16 @@ class TreeLeaf extends TreeElement {
         this.children = [];
 
         this.nodeWrapper = <HTMLLIElement>document.createElement('li');
+        this.title.className = 'Characteristic';
         this.nodeWrapper.appendChild(this.title);
        
-        this.OnClick = this.onClick;
+        var t: TreeLeaf = this;
+
+        this.OnClick = () => t.onClick();
     }
 
-    private onClick(this: HTMLSpanElement, ev: MouseEvent): void {
-        this.parentElement
-            .querySelector(".nested")
-            .classList.toggle("active");
-
-        this.classList.toggle("caret-down");
+    private onClick(): void {
+        var msg: string = ': ok!';
+        alert(this.Name+msg);
     }
 }

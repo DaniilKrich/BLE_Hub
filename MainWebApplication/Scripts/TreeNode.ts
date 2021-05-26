@@ -1,7 +1,7 @@
 ﻿/// <reference path="TreeElement.ts" />
 
 class TreeNode extends TreeElement {
-   
+
 
     constructor(
     ) {
@@ -17,26 +17,25 @@ class TreeNode extends TreeElement {
         this.container.className = 'nested';
         this.nodeWrapper.appendChild(this.container);
 
-        this.OnClick = this.onClick;
+        var t: TreeNode = this;
+
+        this.OnClick = () => t.onClick();
     }
 
-   
 
-  
+
+
     public Append(node: TreeElement): void {
         node.parent = this;
         this.children.push(node);
         this.container.appendChild(node.Node);
     }
 
-    private onClick(this: HTMLSpanElement, ev: MouseEvent): void {
-        this.parentElement
-            .querySelector(".nested")
-            .classList.toggle("active");
-
-        this.classList.toggle("caret-down");
+    private onClick(): void {
+        this.container.classList.toggle("active");
+        this.title.classList.toggle("caret-down");
     }
 
-   
+
 
 }

@@ -29,8 +29,8 @@
     //    });
     //}
     var root: HTMLDivElement = document.getElementById('Root') as HTMLDivElement;
-    var tree: MainTree = new MainTree(root);
-   
+    var server = new Server(root);
+    server.Name = 'Сервер';
     var actions: HTMLDivElement = document.getElementById("Actions") as HTMLDivElement;
 
 

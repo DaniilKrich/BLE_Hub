@@ -15,7 +15,6 @@
     constructor() {
         // <span class="caret caret-down" > Сервер < /span>
         this.title = <HTMLSpanElement>document.createElement('span');
-        this.title.addEventListener('click', (ev: MouseEvent) => this.OnClick);
     }
 
     public set Name(name: string) {
@@ -39,7 +38,10 @@
         return str === null || str.match(/^\s*$/) !== null;
     }
 
-    protected OnClick: Function;
+    protected set OnClick(f: (this: HTMLSpanElement, ev: MouseEvent) => void) {
+        this.title.addEventListener('click', f);
+    }
+
     public Update: Function;
     public Rename: Function;
 }

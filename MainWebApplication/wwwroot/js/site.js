@@ -15,11 +15,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var TreeElement = /** @class */ (function () {
     function TreeElement() {
-        var _this = this;
         this.title = document.createElement('span');
         // <span class="caret caret-down" > Сервер < /span>
         this.title = document.createElement('span');
-        this.title.addEventListener('click', function (ev) { return _this.OnClick; });
     }
     Object.defineProperty(TreeElement.prototype, "Node", {
         /** li element to insert into parent ul*/
@@ -50,8 +48,42 @@ var TreeElement = /** @class */ (function () {
     TreeElement.prototype.IsNullOrWhiteSpace = function (str) {
         return str === null || str.match(/^\s*$/) !== null;
     };
+    Object.defineProperty(TreeElement.prototype, "OnClick", {
+        set: function (f) {
+            this.title.addEventListener('click', f);
+        },
+        enumerable: false,
+        configurable: true
+    });
     return TreeElement;
 }());
+/// <reference path="TreeElement.ts" />
+var TreeLeaf = /** @class */ (function (_super) {
+    __extends(TreeLeaf, _super);
+    function TreeLeaf() {
+        var _this = _super.call(this) || this;
+        _this.children = [];
+        _this.nodeWrapper = document.createElement('li');
+        _this.title.className = 'Characteristic';
+        _this.nodeWrapper.appendChild(_this.title);
+        var t = _this;
+        _this.OnClick = function () { return t.onClick(); };
+        return _this;
+    }
+    TreeLeaf.prototype.onClick = function () {
+        var msg = ': ok!';
+        alert(this.Name + msg);
+    };
+    return TreeLeaf;
+}(TreeElement));
+/// <reference path="TreeLeaf.ts" />
+var BleCharaceristic = /** @class */ (function (_super) {
+    __extends(BleCharaceristic, _super);
+    function BleCharaceristic() {
+        return _super.call(this) || this;
+    }
+    return BleCharaceristic;
+}(TreeLeaf));
 /// <reference path="TreeElement.ts" />
 var TreeNode = /** @class */ (function (_super) {
     __extends(TreeNode, _super);
@@ -65,7 +97,8 @@ var TreeNode = /** @class */ (function (_super) {
         _this.container = document.createElement('ul');
         _this.container.className = 'nested';
         _this.nodeWrapper.appendChild(_this.container);
-        _this.OnClick = _this.onClick;
+        var t = _this;
+        _this.OnClick = function () { return t.onClick(); };
         return _this;
     }
     TreeNode.prototype.Append = function (node) {
@@ -73,22 +106,12 @@ var TreeNode = /** @class */ (function (_super) {
         this.children.push(node);
         this.container.appendChild(node.Node);
     };
-    TreeNode.prototype.onClick = function (ev) {
-        this.parentElement
-            .querySelector(".nested")
-            .classList.toggle("active");
-        this.classList.toggle("caret-down");
+    TreeNode.prototype.onClick = function () {
+        this.container.classList.toggle("active");
+        this.title.classList.toggle("caret-down");
     };
     return TreeNode;
 }(TreeElement));
-/// <reference path="TreeNode.ts" />
-var BleCharaceristic = /** @class */ (function (_super) {
-    __extends(BleCharaceristic, _super);
-    function BleCharaceristic() {
-        return _super.call(this) || this;
-    }
-    return BleCharaceristic;
-}(TreeNode));
 /// <reference path="TreeNode.ts" />
 var BleHub = /** @class */ (function (_super) {
     __extends(BleHub, _super);
@@ -189,7 +212,7 @@ var MainTree = /** @class */ (function () {
         var xhr = new XMLHttpRequest();
         xhr.onload = this.FillBleHubs;
         xhr.open("get", "/Home/GetBleHubs", true);
-        xhr.send();
+        //xhr.send();
         //xhr.setRequestHeader();
         //actions.innerHTML = el.getAttribute('data');
     };
@@ -273,25 +296,8 @@ window.addEventListener('load', function () {
     //    });
     //}
     var root = document.getElementById('Root');
-    var tree = new MainTree(root);
+    var server = new Server(root);
+    server.Name = 'Сервер';
     var actions = document.getElementById("Actions");
 });
-var TreeLeaf = /** @class */ (function (_super) {
-    __extends(TreeLeaf, _super);
-    function TreeLeaf() {
-        var _this = _super.call(this) || this;
-        _this.children = [];
-        _this.nodeWrapper = document.createElement('li');
-        _this.nodeWrapper.appendChild(_this.title);
-        _this.OnClick = _this.onClick;
-        return _this;
-    }
-    TreeLeaf.prototype.onClick = function (ev) {
-        this.parentElement
-            .querySelector(".nested")
-            .classList.toggle("active");
-        this.classList.toggle("caret-down");
-    };
-    return TreeLeaf;
-}(TreeElement));
 //# sourceMappingURL=site.js.map

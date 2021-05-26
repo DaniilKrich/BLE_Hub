@@ -1,6 +1,6 @@
-﻿/// <reference path="TreeNode.ts" />
+﻿/// <reference path="TreeLeaf.ts" />
 
-class BleCharaceristic extends TreeNode {
+class BleCharaceristic extends TreeLeaf{
     constructor() {
         super();
     }

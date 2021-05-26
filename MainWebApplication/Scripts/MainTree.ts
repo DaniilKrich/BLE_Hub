@@ -67,7 +67,7 @@
 
         xhr.onload = this.FillBleHubs;
         xhr.open("get", "/Home/GetBleHubs", true);
-        xhr.send();
+        //xhr.send();
 
         //xhr.setRequestHeader();
 
