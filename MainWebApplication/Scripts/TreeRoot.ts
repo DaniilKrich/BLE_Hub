@@ -1,42 +1,39 @@
-﻿/// <reference path="TreeElement.ts" />
+﻿class TreeRoot extends TreeElement {
 
-class TreeNode extends TreeElement {
-   
+
 
     constructor(
+        parentContainer: HTMLElement
     ) {
         super();
         this.children = [];
-
-        this.nodeWrapper = <HTMLLIElement>document.createElement('li');
-        this.title.className = 'caret';
+        this.nodeWrapper = parentContainer;
         this.nodeWrapper.appendChild(this.title);
 
         // <ul class="nested active" >
         this.container = <HTMLUListElement>document.createElement('ul');
-        this.container.className = 'nested';
+        this.container.className = 'nested active';
         this.nodeWrapper.appendChild(this.container);
 
         this.OnClick = this.onClick;
     }
 
-   
-
-  
     public Append(node: TreeElement): void {
         node.parent = this;
         this.children.push(node);
         this.container.appendChild(node.Node);
     }
 
+
     private onClick(this: HTMLSpanElement, ev: MouseEvent): void {
-        this.parentElement
-            .querySelector(".nested")
-            .classList.toggle("active");
 
-        this.classList.toggle("caret-down");
+        console.log(this);
+
+        //this.parentElement
+        //    .querySelector(".nested")
+        //    .classList.toggle("active");
+
+        //this.classList.toggle("caret-down");
     }
-
-   
 
 }

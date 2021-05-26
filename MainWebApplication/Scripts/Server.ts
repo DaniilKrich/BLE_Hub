@@ -1,12 +1,11 @@
-﻿/// <reference path="TreeNode.ts" />
+﻿/// <reference path="TreeRoot.ts" />
 
-class Server extends TreeNode {
+class Server extends TreeRoot {
 
     constructor(
-        parentContainer: HTMLUListElement
+        parentContainer: HTMLElement
     ) {
-        super();
-        parentContainer.appendChild(this.Node);
+        super(parentContainer);
         this.Update = this.update;
     }
 
