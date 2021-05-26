@@ -4,12 +4,13 @@
  Author:	dkric
 */
 
+
+
 #include "SensorBleClient.h"
 
 SensorBleClient* client;
 
 #pragma region WiFi
-
 
 #define ESP32
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
@@ -144,12 +145,100 @@ String output19State = "off";
 
 #pragma endregion // WiFI
 
+#pragma region HttpServer
 
+#include <Arduino.h>
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <AsyncJson.h>
+#include "ArduinoJson.h"
+#include <ESPAsyncWebServer.h>
+
+AsyncWebServer HTTPServer(80);
+
+const char* PARAM_MESSAGE = "message";
+
+void HttpServerSetup()
+{
+
+	HTTPServer.on("/", HTTP_GET, [](AsyncWebServerRequest* request)
+		{
+			request->send(200, "text/plain", "Hello, world");
+		});
+
+	// Send a GET request to <IP>/get?message=<message>
+	HTTPServer.on("/get", HTTP_GET, [](AsyncWebServerRequest* request)
+		{
+			String message;
+			if (request->hasParam(PARAM_MESSAGE)) {
+				message = request->getParam(PARAM_MESSAGE)->value();
+			}
+			else {
+				message = "No message sent";
+			}
+			request->send(200, "text/plain", "Hello, GET: " + message);
+		});
+	//GetScan
+	HTTPServer.on("/GetScan", HTTP_GET, [](AsyncWebServerRequest* request)
+		{
+			BLEDevice::getScan()->start(0);
+			BLEAdvertisedDevice advertisedDevice;
+			String json = "[";
+			for (int i = 0; i < 5; ++i)
+			{
+				if (i) json += ",";
+				json += "{";
+				json += "\"BLEAddress \":" + String(advertisedDevice.getAddress().toString().c_str());
+				json += "}";
+			}
+			//request->send(200, "application/json", json);
+			request->send(200, "text/plain", +advertisedDevice.getAddress().toString().c_str());
+		});
+	//GetTempreture
+	HTTPServer.on("/GetTempreture", HTTP_GET, [](AsyncWebServerRequest* request)
+		{
+			String json = "[";
+			for (int i = 0; i < 5; ++i) {
+				if (i) json += ",";
+				json += "{";
+				json += "\"Tempreture \":" + String();
+				json += "}";
+			}
+			request->send(200, "application/json", json);
+		});
+	// Send a POST request to <IP>/post with a form field message set to <message>
+	HTTPServer.on("/post", HTTP_POST, [](AsyncWebServerRequest* request)
+		{
+			String message;
+			if (request->hasParam(PARAM_MESSAGE, true)) {
+				message = request->getParam(PARAM_MESSAGE, true)->value();
+			}
+			else {
+				message = "No message sent";
+			}
+			request->send(200, "text/plain", "Hello, POST: " + message);
+		});
+
+
+
+
+	//HTTPServer.onNotFound(notFound);
+
+	HTTPServer.begin();
+}
+
+#pragma endregion //HttpServer
+
+//void notFound(AsyncWebServerRequest* request)
+//{
+//	request->send(404, "text/plain", "Not found");
+//};
 
 // the setup function runs once when you press reset or power the board
-void setup() {
+void setup()
+{
 
-
+	HttpServerSetup();
 
 	setlocale(LC_ALL, "");
 	WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP  
@@ -206,6 +295,7 @@ void setup() {
 	pinMode(LED_PIN, OUTPUT);
 	// Set outputs to LOW
 	digitalWrite(LED_PIN, LOW);
+
 }
 // the loop function runs over and over again until power down or reset
 void loop() {
@@ -239,30 +329,30 @@ void loop() {
 					char c = client.read();             // read a byte, then
 					Serial.write(c);                    // print it out the serial monitor
 					header += c;
-					if (c == '\n') {                    // if the byte is a newline character
+					/*if (c == '\n') { */                   // if the byte is a newline character
 					  // if the current line is blank, you got two newline characters in a row.
 					  // that's the end of the client HTTP request, so send a response:
-						if (currentLine.length() == 0) {
+						/*if (currentLine.length() == 0) {*/
 							// HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
 							// and a content-type so the client knows what's coming, then a blank line:
-							client.println("HTTP/1.1 200 OK");
-							client.println("Content-type:text/html");
-							client.println("Connection: close");
-							client.println();
+							//client.println("HTTP/1.1 200 OK");
+							//client.println("Content-type:text/html");
+							//client.println("Connection: close");
+							//client.println();
 
-							// turns the GPIOs on and off
-							if (header.indexOf("GET /19/on") >= 0) {
-								Serial.println("GPIO 19 on");
-								output19State = "on";
-								digitalWrite(LED_PIN, HIGH);
-							}
-							else if (header.indexOf("GET /19/off") >= 0) {
-								Serial.println("GPIO 19 off");
-								output19State = "off";
-								digitalWrite(LED_PIN, LOW);
-							}
+							//// turns the GPIOs on and off
+							//if (header.indexOf("GET /19/on") >= 0) {
+							//	Serial.println("GPIO 19 on");
+							//	output19State = "on";
+							//	digitalWrite(LED_PIN, HIGH);
+							//}
+							//else if (header.indexOf("GET /19/off") >= 0) {
+							//	Serial.println("GPIO 19 off");
+							//	output19State = "off";
+							//	digitalWrite(LED_PIN, LOW);
+							//}
 
-							client.println("_Layout.cshtml");
+							//client.println("_Layout.cshtml");
 							// Display the HTML web page
 							//client.println("<!DOCTYPE html><html>");
 							//client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
@@ -294,15 +384,15 @@ void loop() {
 							//// The HTTP response ends with another blank line
 							//client.println();
 							// Break out of the while loop
-							break;
-						}
-						else { // if you got a newline, then clear currentLine
-							currentLine = "";
-						}
-					}
-					else if (c != '\r') {  // if you got anything else but a carriage return character,
-						currentLine += c;      // add it to the end of the currentLine
-					}
+							/*break;*/
+						//}
+						//else { // if you got a newline, then clear currentLine
+						//	currentLine = "";
+					//	//}
+					//}
+					//else if (c != '\r') {  // if you got anything else but a carriage return character,
+					//	currentLine += c;      // add it to the end of the currentLine
+					//}
 				}
 			}
 			// Clear the header variable
@@ -318,5 +408,4 @@ void loop() {
 	}
 	//delay(10000);
 	//digitalWrite(LED_PIN, HIGH);
-
 }

@@ -110,7 +110,7 @@ bool SensorBleClient::connectToServer() {
 
 
 	// Obtain a reference to the characteristic in the service of the remote BLE server.
-	Serial.println("Get Temperature");
+	Serial.println("Get CHARACTERISTIC");
 	Tempreture_CHARACTERISTIC = pRemoteService->getCharacteristic(Tempreture_CHARACTERISTIC_UUID);
 	HumiditiGround_CHARACTERISTIC = pRemoteService->getCharacteristic(HumiditiGround_CHARACTERISTIC_UUID);
 	HumiditiAir_CHARACTERISTIC = pRemoteService->getCharacteristic(HumiditiAir_CHARACTERISTIC_UUID);
