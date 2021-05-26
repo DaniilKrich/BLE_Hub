@@ -1,23 +1,25 @@
-﻿
-class BleHub extends HTMLLIElement {
-    public BleNodes: BleNode[];
+﻿/// <reference path="TreeNode.ts" />
 
+class BleHub extends TreeNode  {
     constructor() {
-        super();
-
-         //<span class="caret hub caret-down">Концентратор 1</span>
-        var name: HTMLSpanElement = new HTMLSpanElement();
-        name.className = 'caret';
-        name.textContent = 'Концентратор 1';
-        this.appendChild(name);
-
-        // <ul class="nested active">
-        var nodes: HTMLUListElement = new HTMLUListElement();
-        nodes.className = 'nested';
-        this.appendChild(nodes);
-
-
+        super()
+        this.Update = this.update;
     }
+
+    private update(): void {
+        var bleNode: BleNode = new BleNode();
+        bleNode.Name = 'Полевое устройство 1';
+        this.Append(bleNode);
+
+        bleNode = new BleNode();
+        bleNode.Name = 'Полевое устройство 2';
+        this.Append(bleNode);
+
+        bleNode = new BleNode();
+        bleNode.Name = 'Полевое устройство 3';
+        this.Append(bleNode);
+    }
+
 
     public GetScan() {
 
