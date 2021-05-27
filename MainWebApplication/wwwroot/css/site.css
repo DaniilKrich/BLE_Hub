@@ -26,7 +26,7 @@ a {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+/*html {
     font-size: 14px;
 }
 
@@ -35,7 +35,7 @@ html {
         font-size: 16px;
     }
 }
-
+*/
 .border-top {
     border-top: 1px solid #e5e5e5;
 }
@@ -55,14 +55,25 @@ button.accept-policy {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+/*html {
     position: relative;
     min-height: 100%;
 }
-
-body {
+*/
+html, body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: gainsboro;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    display: block;
+    box-sizing: border-box;
 }
 
 .footer {
@@ -139,24 +150,25 @@ body {
         outline-style: none;
     }*/
 
-main{
-    display:flex;
-    width:100%;
-    height:100%;
-    margin:0;
-    padding:0;
+main {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 
 
-#Root, #Actions #Interface {
+#Root, #Actions, #Interface {
     display: block;
-    margin: 0;
-    padding: 10px;
+    margin: 0px;
+    padding: 5px;
     float: left;
     height: 100%;
-    border-width: 1px;
+    border-width: 0 1px 0 0;
     border-style: solid;
-    border-color: darkblue;
+    border-color: grey;
+    overflow: auto;
 }
 
 #Root {
@@ -169,20 +181,20 @@ main{
 }
 
 #Interface {
-    width: 45%;
-    clear: left;
+    width: calc(45% - 32px);
+    border-width: 0;
 }
 
 /* Remove default bullets */
-ul, #Root {
+ul {
     list-style-type: none;
 }
 
 /* Remove margins and padding from the parent ul */
-#Root {
+/*#Root {
     margin: 0;
     padding: 0;
-}
+}*/
 
 .Characteristic {
     cursor: pointer;
@@ -192,10 +204,11 @@ ul, #Root {
 }
 
 .Action {
-    height: 40px;
     width: auto;
-    border: 1px solid;
+    border: 1px solid gray;
     text-align: center;
+    padding: 10px;
+    margin: 1px;
 }
 
 
