@@ -15,7 +15,6 @@
 #define _VSARDUINO_H_
 #define __ESP32_esp32__
 #define __ESP32_ESP32__
-#define CONFIG_BT_ENABLED
 #define ESP_PLATFORM
 #define HAVE_CONFIG_H
 #define GCC_NOT_5_2_0 0
@@ -105,6 +104,6 @@ typedef long pthread_cond_t;
 #define READ_PERI_REG(addr)
 // Write Value to Register
 #define WRITE_PERI_REG(addr,val)
-#include "BLE_client.ino"
+#include "TreadTest.ino"
 #endif
 #endif

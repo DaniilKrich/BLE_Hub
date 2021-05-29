@@ -75,9 +75,6 @@ void OnStartAP(WiFiManager* wm)
 void OnSaveConfig()
 {
 	qrcode.init();
-
-
-
 }
 
 void checkButton() {
@@ -229,19 +226,13 @@ void HttpServerSetup()
 
 #pragma endregion //HttpServer
 
-//void notFound(AsyncWebServerRequest* request)
-//{
-//	request->send(404, "text/plain", "Not found");
-//};
-
 // the setup function runs once when you press reset or power the board
 void setup()
 {
-
-	HttpServerSetup();
-
+#pragma region //WiFi-M-Setup
 	setlocale(LC_ALL, "");
-	WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP  
+
+	WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
 
 	Serial.begin(115200);
 	Serial.setDebugOutput(true);
@@ -257,16 +248,17 @@ void setup()
 
 	pinMode(TRIGGER_PIN, INPUT);
 
-	Serial.println("Starting Arduino BLE Client application...");
 	std::vector<const char*> menu = { "wifi","info",/*"param",*/"sep","restart","exit" };
 	wm.setMenu(menu);
 
-	// set dark theme
 	wm.setClass("invert");
-	wm.setConfigPortalTimeout(300); // auto close configportal after n seconds
+
+	wm.setConfigPortalTimeout(300);
+
 	bool res;
+
 	String ssid = wm.getDefaultAPName();
-	//const char* AccessPointName = "AutoConnectAP";
+
 	AccessPointName = ssid.c_str();
 
 	char random_password[21];
@@ -276,7 +268,7 @@ void setup()
 	Serial.print("password = ");
 	Serial.println(AccessPointPassword);
 
-	res = wm.autoConnect(AccessPointName, AccessPointPassword); // password protected ap
+	res = wm.autoConnect(AccessPointName, AccessPointPassword);
 
 	if (!res) {
 		Serial.println("Failed to connect or hit timeout");
@@ -288,124 +280,74 @@ void setup()
 		sprintf(msg1, "connected to %s", wm.getWiFiSSID(true));
 		Serial.println((const char*)msg1);
 	}
+#pragma endregion // WiFi-M-Setup
 
 
-	client = new SensorBleClient();
+	HttpServerSetup();
 
-	pinMode(LED_PIN, OUTPUT);
-	// Set outputs to LOW
-	digitalWrite(LED_PIN, LOW);
+	//bleSetup
+
+
+	//setlocale(LC_ALL, "");
+	//WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP  
+
+	//Serial.begin(115200);
+	//Serial.setDebugOutput(true);
+	//display.init();
+	//delay(3000);
+	//// Initialize QRcode display using library
+	//qrcode.init();
+
+	//wm.setAPCallback(OnStartAP);
+	//wm.setSaveConfigCallback(OnSaveConfig);
+
+	//Serial.println("\n Starting");
+
+	//pinMode(TRIGGER_PIN, INPUT);
+
+	//Serial.println("Starting Arduino BLE Client application...");
+	//std::vector<const char*> menu = { "wifi","info",/*"param",*/"sep","restart","exit" };
+	//wm.setMenu(menu);
+
+	//// set dark theme
+	//wm.setClass("invert");
+	//wm.setConfigPortalTimeout(300); // auto close configportal after n seconds
+	//bool res;
+	//String ssid = wm.getDefaultAPName();
+	////const char* AccessPointName = "AutoConnectAP";
+	//AccessPointName = ssid.c_str();
+
+	//char random_password[21];
+
+	//get_random_string(random_password, 10); // Get random string of length 10
+	//AccessPointPassword = (const char*)random_password;
+	//Serial.print("password = ");
+	//Serial.println(AccessPointPassword);
+
+	//res = wm.autoConnect(AccessPointName, AccessPointPassword); // password protected ap
+
+	//if (!res) {
+	//	Serial.println("Failed to connect or hit timeout");
+	//	// ESP.restart();
+	//}
+	//else {
+	//	//if you get here you have connected to the WiFi
+	//	char* msg1 = new char[100];
+	//	sprintf(msg1, "connected to %s", wm.getWiFiSSID(true));
+	//	Serial.println((const char*)msg1);
+	//}
+
+	///// <summary>
+	///// Ble Client
+	///// </summary>
+	//client = new SensorBleClient();
 
 }
+
 // the loop function runs over and over again until power down or reset
 void loop() {
-	//checkButton();
-
+	Serial.println("\n start checkButton \n");
+	checkButton();
+	Serial.println("\n start client->LoopFunc\n ");
 	client->LoopFunc();
-
-
-
-	String temperature = String(client->temperature);
-	String HumiditiGround = String(client->HumiditiGround);
-
-	if (server == NULL) {
-		server = WiFiServer(80);
-		Serial.println("Web Server Init");          // print a message out in the serial port
-		server.begin(80);
-
-	}
-	else {
-
-		WiFiClient client = server.available();   // Listen for incoming clients
-
-		if (client) {                             // If a new client connects,
-			currentTime = millis();
-			previousTime = currentTime;
-			Serial.println("New Client.");          // print a message out in the serial port
-			String currentLine = "";                // make a String to hold incoming data from the client
-			while (client.connected() && currentTime - previousTime <= timeoutTime) {  // loop while the client's connected
-				currentTime = millis();
-				if (client.available()) {             // if there's bytes to read from the client,
-					char c = client.read();             // read a byte, then
-					Serial.write(c);                    // print it out the serial monitor
-					header += c;
-					/*if (c == '\n') { */                   // if the byte is a newline character
-					  // if the current line is blank, you got two newline characters in a row.
-					  // that's the end of the client HTTP request, so send a response:
-						/*if (currentLine.length() == 0) {*/
-							// HTTP headers always start with a response code (e.g. HTTP/1.1 200 OK)
-							// and a content-type so the client knows what's coming, then a blank line:
-							//client.println("HTTP/1.1 200 OK");
-							//client.println("Content-type:text/html");
-							//client.println("Connection: close");
-							//client.println();
-
-							//// turns the GPIOs on and off
-							//if (header.indexOf("GET /19/on") >= 0) {
-							//	Serial.println("GPIO 19 on");
-							//	output19State = "on";
-							//	digitalWrite(LED_PIN, HIGH);
-							//}
-							//else if (header.indexOf("GET /19/off") >= 0) {
-							//	Serial.println("GPIO 19 off");
-							//	output19State = "off";
-							//	digitalWrite(LED_PIN, LOW);
-							//}
-
-							//client.println("_Layout.cshtml");
-							// Display the HTML web page
-							//client.println("<!DOCTYPE html><html>");
-							//client.println("<head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-							//client.println("<link rel=\"icon\" href=\"data:,\">");
-							//// CSS to style the on/off buttons 
-							//// Feel free to change the background-color and font-size attributes to fit your preferences
-							//client.println("<style>html { font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center;}");
-							//client.println(".button { background-color: #4CAF50; border: none; color: white; padding: 16px 40px;");
-							//client.println("text-decoration: none; font-size: 30px; margin: 2px; cursor: pointer;}");
-							//client.println(".button2 {background-color: #555555;}</style>");
-
-
-							//// Web Page Heading
-							//client.println("<body><h1>ESP32 Web Server</h1>");
-
-							//// Display current state, and ON/OFF buttons for GPIO 19  
-							//client.println("<p>GPIO 19 - State " + output19State + "</p>");
-							//// If the output19State is off, it displays the ON button       
-							//if (output19State == "off") {
-							//	client.println("<p><a href=\"/19/on\"><button class=\"button\">ON</button></a></p>");
-							//}
-							//else {
-							//	client.println("<p><a href=\"/19/off\"><button class=\"button button2\">OFF</button></a></p>");
-							//}
-							//client.println("<table border='1'><tr><th>Temp</th><th>HumGr</th><th>Volt</th></tr>");
-							//client.println("<tr><td>" + temperature + "</td><td>" + HumiditiGround + "</td></tr></table>");
-							//client.println("</body></html>");
-
-							//// The HTTP response ends with another blank line
-							//client.println();
-							// Break out of the while loop
-							/*break;*/
-						//}
-						//else { // if you got a newline, then clear currentLine
-						//	currentLine = "";
-					//	//}
-					//}
-					//else if (c != '\r') {  // if you got anything else but a carriage return character,
-					//	currentLine += c;      // add it to the end of the currentLine
-					//}
-				}
-			}
-			// Clear the header variable
-			header = "";
-			// Close the connection
-			client.stop();
-			Serial.println("Client disconnected.");
-			Serial.println("");
-		}
-		//else {
-		//	Serial.println("No Client.");          // print a message out in the serial port
-		//}
-	}
-	//delay(10000);
-	//digitalWrite(LED_PIN, HIGH);
 }
