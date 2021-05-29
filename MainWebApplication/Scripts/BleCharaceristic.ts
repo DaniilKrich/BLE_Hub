@@ -1,7 +1,7 @@
-﻿
-class BleCharaceristic extends HTMLLIElement {
+﻿/// <reference path="TreeLeaf.ts" />
+
+class BleCharaceristic extends TreeLeaf{
     constructor() {
         super();
-        this.className = 'BleCharacteristic';
     }
 }

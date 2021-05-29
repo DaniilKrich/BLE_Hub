@@ -1,12 +1,9 @@
-﻿
+﻿class MainTree  {
+    private tree: HTMLUListElement;
 
-class MainTree extends HTMLUListElement {
-    public BleHubs: BleHub[];
-
-    constructor() {
-        super();// = new HTMLUListElement();
-        this.id="Root"
-
+    constructor(
+        private root: HTMLDivElement) {
+       
 
 
 
@@ -46,6 +43,13 @@ class MainTree extends HTMLUListElement {
 
 
     public Update(): void {
+        this.root.innerHTML = '';
+        this.tree = <HTMLUListElement>document.createElement('ul');
+        this.tree.id = 'Tree';
+        this.root.appendChild(this.tree);
+
+
+
         /*this.BleHubs = new*/ 
 
         //var list: HTMLLIElement = new HTMLLIElement();
@@ -54,18 +58,16 @@ class MainTree extends HTMLUListElement {
           <span class="caret caret-down">Сервер</span>
             <ul class="nested active">
          */
-        this.innerHTML = '';
 
-        var server = new Server();
-        this.appendChild(server);
-
+        var server = new Server(this.tree);
+        server.Name = 'Сервер';
 
 
         var xhr: XMLHttpRequest = new XMLHttpRequest();
 
         xhr.onload = this.FillBleHubs;
         xhr.open("get", "/Home/GetBleHubs", true);
-        xhr.send();
+        //xhr.send();
 
         //xhr.setRequestHeader();
 

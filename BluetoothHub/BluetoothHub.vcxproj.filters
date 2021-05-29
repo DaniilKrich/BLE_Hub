@@ -30,6 +30,9 @@
     <ClInclude Include="SensorBleClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="__vm\.BluetoothHub.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MyAdvertisedDeviceCallbacks.cpp">

@@ -26,7 +26,7 @@ a {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+/*html {
     font-size: 14px;
 }
 
@@ -35,7 +35,7 @@ html {
         font-size: 16px;
     }
 }
-
+*/
 .border-top {
     border-top: 1px solid #e5e5e5;
 }
@@ -55,14 +55,25 @@ button.accept-policy {
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+/*html {
     position: relative;
     min-height: 100%;
 }
-
-body {
+*/
+html, body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: gainsboro;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #333;
+    display: block;
+    box-sizing: border-box;
 }
 
 .footer {
@@ -139,57 +150,65 @@ body {
         outline-style: none;
     }*/
 
-#Tree {
-    display: block;
-    margin: 0;
-    padding: 10px;
-    float: left;
-    width: 30%;
+main {
+    display: flex;
+    width: 100%;
     height: 100%;
-    border: solid;
+    margin: 0;
+    padding: 0;
+}
+
+
+#Root, #Actions, #Interface {
+    display: block;
+    margin: 0px;
+    padding: 5px;
+    float: left;
+    height: 100%;
+    border-width: 0 1px 0 0;
+    border-style: solid;
+    border-color: grey;
+    overflow: auto;
+}
+
+#Root {
+    clear: left;
+    width: 30%;
 }
 
 #Actions {
-    display: block;
-    float: left;
-    height: 100%;
     width: 25%;
-    border: solid;
 }
 
 #Interface {
-    display: block;
-    margin: 0;
-    padding: 10px;
-    height: 100%;
-    float: left;
-    width: 45%;
-    border: 1px solid;
+    width: calc(45% - 32px);
+    border-width: 0;
 }
 
 /* Remove default bullets */
-ul, #Root {
+ul {
     list-style-type: none;
 }
 
 /* Remove margins and padding from the parent ul */
-#Root {
+/*#Root {
     margin: 0;
     padding: 0;
-}
+}*/
 
 .Characteristic {
     cursor: pointer;
 }
 
-.hub{
-
+.hub {
 }
+
 .Action {
-    height: 40px;
     width: auto;
-    border: 1px solid;
-    text-align:center;
+    border: 1px solid gray;
+    text-align: center;
+    padding: 10px;
+    margin: 1px;
 }
 
 
@@ -207,7 +226,7 @@ ul, #Root {
         margin-right: 6px;
     }
 
- 
+
 
 /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
 .caret-down::before {

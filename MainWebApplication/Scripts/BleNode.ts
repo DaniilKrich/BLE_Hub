@@ -1,16 +1,18 @@
-﻿
-class BleNode extends HTMLLIElement {
-    public BleServices: BleService[];
+﻿/// <reference path="TreeNode.ts" />
+
+class BleNode extends TreeNode {
     constructor() {
         super();
-        this.className = 'BleNode';
-        this.addEventListener('click', this.OnClick);
+        this.Update = this.update;
     }
 
-    private OnClick(): void {
-        this.parentElement
-            .querySelector(".nested")
-            .classList.toggle("active");
-        this.classList.toggle("caret-down");
+    private update(): void {
+        var bleService: BleService = new BleService();
+        bleService.Name = 'Почва';
+        this.Append(bleService);
+
+        bleService = new BleService();
+        bleService.Name = 'Атмосфера';
+        this.Append(bleService);
     }
 }

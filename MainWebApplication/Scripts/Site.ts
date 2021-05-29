@@ -28,13 +28,9 @@
     //        this.classList.toggle("caret-down");
     //    });
     //}
-    var tree: HTMLDivElement = document.getElementById('Tree') as HTMLDivElement;
-    var root: MainTree = <MainTree>(<unknown> document.createElement('div'));
-    tree.innerHTML = '';
-    tree.appendChild(root);
-
-    //root.Update();
-
+    var root: HTMLDivElement = document.getElementById('Root') as HTMLDivElement;
+    var server = new Server(root);
+    server.Name = 'Сервер';
     var actions: HTMLDivElement = document.getElementById("Actions") as HTMLDivElement;
 
 
