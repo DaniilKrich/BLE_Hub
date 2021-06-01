@@ -90,6 +90,7 @@ typedef long pthread_mutex_t;
 typedef long pthread_mutex_t;
 typedef long pthread_cond_t;
 
+#define __CHAR_BIT__ 1
 
 
 #include "arduino.h"

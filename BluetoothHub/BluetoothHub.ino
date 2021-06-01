@@ -3,9 +3,6 @@
  Created:	06.05.2021 14:14:43
  Author:	dkric
 */
-
-
-
 #include "SensorBleClient.h"
 
 SensorBleClient* client;

@@ -33,7 +33,7 @@ void Master(void* parameter)
 {
 	while (true)
 	{
-		vTaskSta
+	
 	}
 }
 

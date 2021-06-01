@@ -94,10 +94,14 @@
       <ForcedIncludeFiles>$(ProjectDir)__vm\.BLE_client.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
       <PreprocessorDefinitions>__ESP32_esp32__;__ESP32_ESP32__;CONFIG_BT_ENABLED;ESP_PLATFORM;HAVE_CONFIG_H;GCC_NOT_5_2_0=0;WITH_POSIX;F_CPU=240000000L;ARDUINO=108010;ARDUINO_ESP32_DEV;ARDUINO_ARCH_ESP32;ESP32;CORE_DEBUG_LEVEL=2;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectCapability Include="VisualMicro" />

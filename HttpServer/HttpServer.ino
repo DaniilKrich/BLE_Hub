@@ -4,18 +4,26 @@
  Author:	dkric
 */
 
+//TaskHandle_t TaskM;
+//TaskHandle_t Task1;
+//TaskHandle_t Task2;
 //#define CONFIG_SW_COEXIST_ENABLE 1
 
+#include <HardwareSerial.h>
 #include <Arduino.h>
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <AsyncJson.h>
-#include "ArduinoJson.h"
+#include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
 #include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEScan.h>
+#include <BLEAdvertisedDevice.h>
 
 AsyncWebServer HTTPServer(80);
 
+bool StartScan = false;
 const char* ssid = "Keenetic-9075";
 const char* password = "x9Wd86wG";
 
@@ -28,55 +36,70 @@ void notFound(AsyncWebServerRequest* request) {
 int i;
 
 //Ble Scan
-#include <BLEDevice.h>
-#include <BLEUtils.h>
-#include <BLEScan.h>
-#include <BLEAdvertisedDevice.h>
 
 int scanTime = 5; //In seconds
 
 BLEScan* pBLEScan;
 
+DynamicJsonBuffer jsonBuffer;
+JsonObject& BleEnvironment = jsonBuffer.createObject();
+
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 	void onResult(BLEAdvertisedDevice advertisedDevice) {
-		Serial.printf("Advertised Device: %s \n", advertisedDevice.toString().c_str());
+
+		auto mac = advertisedDevice.getAddress().toString();
+		BleEnvironment["MAC"] = mac;
+		/*JsonObject& bleDevice = jsonBuffer.createObject();
+		bleDevice["Name"] = advertisedDevice.getName();
+		bleDevice["ManufacturerData"] = advertisedDevice.getManufacturerData();*/
+
+		/*JsonObject& bleServices = jsonBuffer.createObject();
+		for (int i = 0;i < advertisedDevice.getServiceDataCount();i++)
+		{
+			bleServices[i] = advertisedDevice.getServiceData(i);
+		}*/
+
+		//bleDevice["Services"] = bleServices;
+		//BleEnvironment[mac] = bleDevice;
+		//BleEnvironment[mac]["Name"] = advertisedDevice.getName();
+		//BleEnvironment[mac]["ManufacturerData"] = advertisedDevice.getManufacturerData();
+
 	}
 };
 
+void BLEScanSetup()
+{
+	//Serial.println("Scanning...");
 
-
-
-void BLEScanLoop()
-{	//BLEScanSetup();
-	Serial.begin(115200);
-	Serial.println("Scanning...");
-	Serial.println("1");
 	BLEDevice::init("");
-	Serial.println("2");
-	pBLEScan = BLEDevice::getScan(); //create new scan ТУТ ПРОГРАМА СТОПИТСЯ
-	Serial.println("3");
+	pBLEScan = BLEDevice::getScan(); //create new scan
 	pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-	Serial.println("4");
 	pBLEScan->setActiveScan(true); //active scan uses more power, but get results faster
-	Serial.println("5");
 	pBLEScan->setInterval(100);
-	Serial.println("6");
-	pBLEScan->setWindow(99);  // less or equal setInterval value
-	// BLEScanLoop
-	BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
+	pBLEScan->setWindow(99);  // less or equal setInterval value // less or equal setInterval value
+//BLEScanLoop()
+	/*BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
 	Serial.print("Devices found: ");
 	Serial.println(foundDevices.getCount());
-	Serial.println("Scan done!");
-	pBLEScan->clearResults();   // delete results fromBLEScan buffer to release memory
-	i = 0;
+	for (int i = 0;i < foundDevices.getCount(); i++)
+	{
+		auto dev = foundDevices.getDevice(i);
+		Serial.println(dev.getAddress().toString().c_str());
+	}
+
+	Serial.println("=============================================");*/
+
+
+	//Serial.println("Scan done!");
+	//pBLEScan->clearResults();   // delete results fromBLEScan buffer to release memory
+	//i = 0;
 }
 
 void HttpSetup()
 {
 	Serial.println("Start HTTP server");
 
-	Serial.begin(115200);
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(ssid, password);
 	if (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -91,6 +114,7 @@ void HttpSetup()
 		request->send(200, "text/plain", "Hello, world");
 		});
 
+
 	// Send a GET request to <IP>/get?message=<message>
 	HTTPServer.on("/get", HTTP_GET, [](AsyncWebServerRequest* request) {
 		String message;
@@ -103,19 +127,19 @@ void HttpSetup()
 		request->send(200, "text/plain", "Hello, GET: " + message);
 		});
 	//GetScan
-	HTTPServer.on("/GetScan", HTTP_GET, [](AsyncWebServerRequest* request)
+	HTTPServer.on("/StartScan", HTTP_GET, [](AsyncWebServerRequest* request)
 		{
-			String json = "[";
-			for (int i = 0; i < 5; ++i)
-			{
-				if (i) json += ",";
-				json += "{";
-				//json += "\"BLEAddress \":" + String(advertisedDevice.getAddress().toString().c_str());
-				json += "}";
-				json += "]";
-			}
-			request->send(200, "application/json", json);
-			//request->send(200, "text/plain", +advertisedDevice.getAddress().toString().c_str());
+			StartScan = true;
+			request->send(200, "text/plain", String(StartScan));
+		});
+
+
+	//GetScanResults
+	HTTPServer.on("/GetScanResults", HTTP_GET, [](AsyncWebServerRequest* request) {
+		AsyncResponseStream* response = request->beginResponseStream("application/json");
+		BleEnvironment.printTo(*response);
+		request->send(response);
+
 		});
 	// Send a POST request to <IP>/post with a form field message set to <message>
 	HTTPServer.on("/post", HTTP_POST, [](AsyncWebServerRequest* request) {
@@ -134,12 +158,115 @@ void HttpSetup()
 	HTTPServer.begin();
 }
 
+
+//
+//String GetScan(uint8_t* buffer, size_t maxLen) {
+//
+//
+//	BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
+//	Serial.print("Devices found: ");
+//	Serial.println(foundDevices.getCount());
+//	for (int i = 0;i < foundDevices.getCount(); i++)
+//
+//	{
+//		auto dev = foundDevices.getDevice(i);
+//		Serial.println(dev.getAddress().toString().c_str());
+//	}
+//
+//	Serial.println("=============================================");
+//	Serial.println("Scan done!");
+//	pBLEScan->clearResults();   // delete results fromBLEScan buffer to release memory
+//
+//
+//	auto len = BleEnvironment.size();
+//
+//	String json = "[";
+//	int i = 0;
+//	for (BLEAdvertisedDevice dev : BleEnvironment)
+//	{
+//		if (i++)
+//		{
+//			json += ",";
+//		}
+//
+//		json += "{";
+//		json += "\"BLEAddress \":";
+//		json += dev.getAddress().toString().c_str();
+//		json += "}";
+//		json += "]";
+//	}
+//
+//	return json;
+//}
+//
+
+//void TaskCode1(void* parameter)
+//{
+//		Serial.print("task1 core ");
+//		Serial.println(xPortGetCoreID());
+//		BLEScanSetup();
+//}
+//void TaskCode2(void* parameter)
+//{
+//
+//		Serial.print("task2 core ");
+//		Serial.println(xPortGetCoreID());
+//		HttpSetup();
+//}
+//
+//void Master(void* parameter)
+//{
+//	while (true)
+//	{
+//
+//	}
+//}
+
 void setup()
 {
+	Serial.begin(115200);
+	Serial.print("setup() running on core ");
+	//  "Блок setup() выполняется на ядре "
+	Serial.println(xPortGetCoreID());
+
+	BLEScanSetup();
 	HttpSetup();
+
+
+
+	//xTaskCreatePinnedToCore(
+	//	Master, /* Функция, содержащая код задачи */
+	//	"TaskM", /* Название задачи */
+	//	10000, /* Размер стека в словах */
+	//	NULL, /* Параметр создаваемой задачи */
+	//	2, /* Приоритет задачи */
+	//	&TaskM, /* Идентификатор задачи */
+	//	0); /* Ядро, на котором будет выполняться задача */
+
+	//xTaskCreatePinnedToCore(
+	//	TaskCode1, /* Функция, содержащая код задачи */
+	//	"Task1", /* Название задачи */
+	//	10000, /* Размер стека в словах */
+	//	NULL, /* Параметр создаваемой задачи */
+	//	1, /* Приоритет задачи */
+	//	&Task1, /* Идентификатор задачи */
+	//	1); /* Ядро, на котором будет выполняться задача */
+
+	//xTaskCreatePinnedToCore(
+	//	TaskCode2, /* Функция, содержащая код задачи */
+	//	"Task2", /* Название задачи */
+	//	10000, /* Размер стека в словах */
+	//	NULL, /* Параметр создаваемой задачи */
+	//	1, /* Приоритет задачи */
+	//	&Task2, /* Идентификатор задачи */
+	//	0); /* Ядро, на котором будет выполняться задача */
 
 }
 
 void loop() {
-	BLEScanLoop();
+	if (StartScan) {
+		pBLEScan->start(scanTime, false);
+		StartScan = false;
+	}
+	delay(1000);
 }
