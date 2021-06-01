@@ -48,23 +48,14 @@ JsonObject& BleEnvironment = jsonBuffer.createObject();
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 	void onResult(BLEAdvertisedDevice advertisedDevice) {
 
-		auto mac = advertisedDevice.getAddress().toString();
-		BleEnvironment["MAC"] = mac;
-		/*JsonObject& bleDevice = jsonBuffer.createObject();
-		bleDevice["Name"] = advertisedDevice.getName();
-		bleDevice["ManufacturerData"] = advertisedDevice.getManufacturerData();*/
+		auto mac = advertisedDevice.getAddress().toString().c_str();
+		BleEnvironment[mac]["Name"] = advertisedDevice.getName().c_str();
+		BleEnvironment[mac]["ManufacturerData"] = advertisedDevice.getManufacturerData().c_str();
 
-		/*JsonObject& bleServices = jsonBuffer.createObject();
 		for (int i = 0;i < advertisedDevice.getServiceDataCount();i++)
 		{
-			bleServices[i] = advertisedDevice.getServiceData(i);
-		}*/
-
-		//bleDevice["Services"] = bleServices;
-		//BleEnvironment[mac] = bleDevice;
-		//BleEnvironment[mac]["Name"] = advertisedDevice.getName();
-		//BleEnvironment[mac]["ManufacturerData"] = advertisedDevice.getManufacturerData();
-
+			BleEnvironment[mac]["Services"][i] = advertisedDevice.getServiceData(i).c_str();
+		}
 	}
 };
 
