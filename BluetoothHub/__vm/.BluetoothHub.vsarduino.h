@@ -24,7 +24,7 @@
 #define ARDUINO_ESP32_DEV
 #define ARDUINO_ARCH_ESP32
 #define ESP32
-#define CORE_DEBUG_LEVEL 2
+#define CORE_DEBUG_LEVEL 0
 #define __cplusplus 201103L
 
 #define _Pragma(x)
@@ -90,7 +90,6 @@ typedef long pthread_mutex_t;
 typedef long pthread_mutex_t;
 typedef long pthread_cond_t;
 
-#define __CHAR_BIT__ 1
 
 
 #include "arduino.h"
