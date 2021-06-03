@@ -25,34 +25,26 @@ namespace MainWebApplication.Controllers
             return View();
         }
 
-        public JsonResult AddBleHub(string ipString) //web-service
+        public StatusCodeResult AddBleHub(string name) //web-service
         {
+            Ping ping = new Ping();
+            var result = ping.Send(name);
 
-            if (IPAddress.TryParse(ipString, out IPAddress iPAddress))
+            if (result.Status == IPStatus.Success)
             {
-                Ping ping = new Ping();
-                var result = ping.Send(iPAddress);
+                var blehub = new BleHub(name);
 
-                if (result.Status == IPStatus.Success)
-                {
-                    var blehub = new BleHub(iPAddress);
-                     
-                    return new JsonResult("SUccess");
+                return new OkResult();
+            }
 
-                    //return new JsonResult("SUccess");
-                }
-
-            };
-
-
-            return new JsonResult("Fault");
+            return new BadRequestResult();
         }
 
         // todo
         //GetNodes(blehub)
-        public JsonResult GetNodes(BleHub bleHub)
+        public JsonResult GetNodes(string name)
         {
-            bleHub.IpAddress = null; //как его получить
+            //bleHub.IpAddress = null; //как его получить
             return new JsonResult("Nodes");
         }
         // GetServices(blehub,node)

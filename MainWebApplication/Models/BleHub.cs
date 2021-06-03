@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,17 +15,18 @@ namespace MainWebApplication
         {
         }
 
-        public BleHub(IPAddress iPAddress)
+        private string webRequestRoot => $"http://{Name}/";
+
+        public BleHub(string name)
         {
-            IpAddress = iPAddress;
-            Name = GetNameFromBleHub();
+            Name = name;
         }
 
         private string GetNameFromBleHub()
         {
             WebRequest request =
                WebRequest
-               .Create($"http://{IpAddress}/GetHubName");
+               .Create($"{webRequestRoot}GetHubName");
 
             var response = request.GetResponse();
 
@@ -46,10 +48,14 @@ namespace MainWebApplication
 
         }
 
+        /// <summary>
+        /// MAC or physical address
+        /// </summary>
         public int ID { get; set; }
 
-        public IPAddress IpAddress { get; set; }
+        //public IPAddress IpAddress { get; set; }
 
+        [Key]
         public string Name { get; set; }
         public string Description { get; set; }
 
@@ -59,7 +65,7 @@ namespace MainWebApplication
         {
             WebRequest request =
                 WebRequest
-                .Create($"http://{IpAddress}/GetBleServices");
+                .Create($"http://{Name}/GetBleServices");
 
             var response = request.GetResponse();
 
