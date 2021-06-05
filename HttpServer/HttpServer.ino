@@ -22,16 +22,101 @@
 AsyncWebServer HTTPServer(80);
 
 bool StartScan = false;
+bool BLEConnect = false;
+bool GetCharacteristics = false;
+
 const char* ssid = "Keenetic-9075";
 const char* password = "x9Wd86wG";
 
 const char* PARAM_MESSAGE = "message";
+const char* PARAM_MESSAGE1 = "mac";
+const char* PARAM_MESSAGE2 = "UUID";
+
+BLEClient* pClient;
 
 void notFound(AsyncWebServerRequest* request) {
 	request->send(404, "text/plain", "Not found");
 }
 
 int i;
+
+//ble connect
+
+#define SERVICE_UUID "94ec923e-b5a6-11eb-8529-0242ac130003" // 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+#define Tempreture_UUID "94ec96e4-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26a8
+#define HumiditiGround_UUID "94ec97de-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26a9
+#define HumiditiAir_UUID "94ec989c-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26aa
+#define Voltage_UUID "94ec9964-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ab
+#define Test_UUID "94ec9a22-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ac
+#define Pressure_UUID "94ec9cac-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ad
+
+BLEUUID SensorBleClient::serviceUUID = BLEUUID(SERVICE_UUID);
+BLEUUID SensorBleClient::Tempreture_CHARACTERISTIC_UUID = BLEUUID(Tempreture_UUID);
+BLEUUID SensorBleClient::HumiditiGround_CHARACTERISTIC_UUID = BLEUUID(HumiditiGround_UUID);
+BLEUUID SensorBleClient::HumiditiAir_CHARACTERISTIC_UUID = BLEUUID(HumiditiAir_UUID);
+BLEUUID SensorBleClient::Voltage_CHARACTERISTIC_UUID = BLEUUID(Voltage_UUID);
+BLEUUID SensorBleClient::Test_CHARACTERISTIC_UUID = BLEUUID(Test_UUID);
+BLEUUID SensorBleClient::Pressure_CHARACTERISTIC_UUID = BLEUUID(Pressure_UUID);
+
+BLERemoteCharacteristic* SensorBleClient::Tempreture_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* SensorBleClient::HumiditiGround_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* SensorBleClient::HumiditiAir_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* SensorBleClient::Voltage_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* SensorBleClient::Test_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* SensorBleClient::Pressure_CHARACTERISTIC = NULL;
+
+
+String BLEmac;
+String BLEUUID;
+
+
+class MyClientCallback : public BLEClientCallbacks {
+public:
+	MyClientCallback();
+	bool connected;
+	void onConnect(BLEClient* pclient);
+	void onDisconnect(BLEClient* pclient);
+};
+
+MyClientCallback::MyClientCallback() {
+	connected = false;
+
+};
+
+
+
+void MyClientCallback::onConnect(BLEClient* pclient) {
+	connected = true;
+	Serial.print("connected");
+}
+
+void MyClientCallback::onDisconnect(BLEClient* pclient) {
+	connected = false;
+	Serial.print("disconnected");
+}
+
+
+bool connectToServer() {
+
+	std::string bLEmac = std::string(BLEmac.c_str());
+
+	pClient = BLEDevice::createClient();
+	Serial.println(" - Created client");
+	pClient->setClientCallbacks(new MyClientCallback());
+	pClient->connect(bLEmac, BLE_ADDR_TYPE_PUBLIC);
+	return true;
+}
+
+void disconnectFromServer()
+{
+	pClient->disconnect();
+}
+
+bool GetBLECharacteristics() {
+	BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
+
+	return true;
+}
 
 //Ble Scan
 
@@ -143,9 +228,23 @@ void HttpSetup()
 	HTTPServer.on("/GetScanResults", HTTP_GET, [](AsyncWebServerRequest* request) {
 		Serial.println("GetScanResults start");
 		AsyncResponseStream* response = request->beginResponseStream("application/json");
-		serializeJson(BleEnvironment,*response);
+		serializeJson(BleEnvironment, *response);
 		request->send(response);
 		Serial.println("GetScanResults stop");
+		});
+	//GetCharacteristics <IP>/GetCharacteristics?mac=<mac>&UUIDs=<UUID>,<UUID>
+http://192.168.1.49/GetCharacteristics?mac=c4:4f:33:7f:cb:9b&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003
+	HTTPServer.on("/GetCharacteristics", HTTP_GET, [](AsyncWebServerRequest* request) {
+		Serial.println("GetCharacteristics start");
+
+		if (request->hasParam(PARAM_MESSAGE1)) {
+			BLEmac = request->getParam(PARAM_MESSAGE1)->value();
+			BLEUUID = request->getParam(PARAM_MESSAGE2)->value();
+		}
+
+		request->send(200, "text/plain", "Hello, GET: " + BLEmac + BLEUUID);
+		BLEConnect = true;
+		Serial.println("GetCharacteristics  stop");
 		});
 	// Send a POST request to <IP>/post with a form field message set to <message>
 	HTTPServer.on("/post", HTTP_POST, [](AsyncWebServerRequest* request) {
@@ -228,6 +327,14 @@ void loop() {
 		Serial.println("loop - EndScan");
 
 		StartScan = false;
+	}
+	if (BLEConnect)
+	{
+		if (connectToServer())
+		{
+			GetBLECharacteristics();
+		}
+		disconnectFromServer();
 	}
 	delay(1000);
 }
