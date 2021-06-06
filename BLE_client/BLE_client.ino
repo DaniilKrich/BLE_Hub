@@ -1,5 +1,6 @@
 #include "SensorBleClient.h"
-#include <HardwareSerial.h>
+//#include <HardwareSerial.h>
+
 SensorBleClient* client;
 
 void setup() {

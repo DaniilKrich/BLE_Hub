@@ -4,30 +4,35 @@
  Author:	dkric
 */
 
-//TaskHandle_t TaskM;
-//TaskHandle_t Task1;
-//TaskHandle_t Task2;
 //#define CONFIG_SW_COEXIST_ENABLE 1
+#define CONFIG_BT_ENABLED
 
+#include "ArduinoJson.h"
 #include <HardwareSerial.h>
 #include <Arduino.h>
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <AsyncJson.h>
-#include <ArduinoJson.h>
 #include <ESPAsyncWebServer.h>
-#include <BLEDevice.h>
+#include "BLEDevice.h"
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
 
+
 AsyncWebServer HTTPServer(80);
 
 bool StartScan = false;
+bool BLEConnect = false;
+bool GetCharacteristics = false;
+
 const char* ssid = "Keenetic-9075";
 const char* password = "x9Wd86wG";
 
 const char* PARAM_MESSAGE = "message";
+const char* PARAM_MESSAGE1 = "mac";
+
+BLEClient* pClient;
 
 void notFound(AsyncWebServerRequest* request) {
 	request->send(404, "text/plain", "Not found");
@@ -35,50 +40,158 @@ void notFound(AsyncWebServerRequest* request) {
 
 int i;
 
+//ble connect
+
+#define SERVICE_UUID "94ec923e-b5a6-11eb-8529-0242ac130003" // 4fafc201-1fb5-459e-8fcc-c5c9c331914b
+#define Tempreture_UUID "94ec96e4-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26a8
+#define HumiditiGround_UUID "94ec97de-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26a9
+#define HumiditiAir_UUID "94ec989c-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26aa
+#define Voltage_UUID "94ec9964-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ab
+#define Test_UUID "94ec9a22-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ac
+#define Pressure_UUID "94ec9cac-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ad
+
+
+
+BLEUUID serviceUUID = BLEUUID(SERVICE_UUID);
+BLEUUID Tempreture_CHARACTERISTIC_UUID = BLEUUID(Tempreture_UUID);
+BLEUUID HumiditiGround_CHARACTERISTIC_UUID = BLEUUID(HumiditiGround_UUID);
+BLEUUID HumiditiAir_CHARACTERISTIC_UUID = BLEUUID(HumiditiAir_UUID);
+BLEUUID Voltage_CHARACTERISTIC_UUID = BLEUUID(Voltage_UUID);
+BLEUUID Test_CHARACTERISTIC_UUID = BLEUUID(Test_UUID);
+BLEUUID Pressure_CHARACTERISTIC_UUID = BLEUUID(Pressure_UUID);
+
+BLERemoteCharacteristic* Tempreture_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* HumiditiGround_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* HumiditiAir_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* Voltage_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* Test_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* Pressure_CHARACTERISTIC = NULL;
+
+std::string TempretureValue;
+std::string HumiditiGroundValue;
+std::string HumiditiAirValue;
+std::string VoltageValue;
+std::string TestValue;
+std::string PressureValue;
+
+
+String BLEmac;
+String BLEuuid;
+
+
+class MyClientCallback : public BLEClientCallbacks {
+public:
+	MyClientCallback();
+	bool connected;
+	void onConnect(BLEClient* pclient);
+	void onDisconnect(BLEClient* pclient);
+};
+
+MyClientCallback::MyClientCallback() {
+	connected = false;
+
+};
+
+
+
+void MyClientCallback::onConnect(BLEClient* pclient) {
+	connected = true;
+	Serial.print("connected");
+}
+
+void MyClientCallback::onDisconnect(BLEClient* pclient) {
+	connected = false;
+	Serial.print("disconnected");
+}
+
+
+bool connectToServer() {
+
+	std::string bLEmac = std::string(BLEmac.c_str());
+
+	pClient = BLEDevice::createClient();
+	Serial.println(" - Created client");
+	pClient->setClientCallbacks(new MyClientCallback());
+	pClient->connect(bLEmac, BLE_ADDR_TYPE_PUBLIC);
+	return true;
+}
+
+void disconnectFromServer()
+{
+	pClient->disconnect();
+}
+
+bool GetBLECharacteristics() {
+	BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
+	Serial.println(serviceUUID.toString().c_str());
+	TempretureValue = Tempreture_CHARACTERISTIC->readValue();
+	HumiditiGroundValue = HumiditiGround_CHARACTERISTIC->readValue();
+	HumiditiAirValue = HumiditiAir_CHARACTERISTIC->readValue();
+	VoltageValue = Voltage_CHARACTERISTIC->readValue();
+	TestValue = Test_CHARACTERISTIC->readValue();
+	PressureValue = Pressure_CHARACTERISTIC->readValue();
+	return true;
+}
+
 //Ble Scan
 
 int scanTime = 5; //In seconds
 
 BLEScan* pBLEScan;
 
-DynamicJsonDocument  BleEnvironment(1024);
-
+StaticJsonDocument<1024> BleEnvironment;
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 	void onResult(BLEAdvertisedDevice advertisedDevice) {
-
+		//Serial.println("start create json");
 		auto mac = advertisedDevice.getAddress().toString().c_str();
-		BleEnvironment[mac]["Name"] = advertisedDevice.getName().c_str();
-		BleEnvironment[mac]["ManufacturerData"] = advertisedDevice.getManufacturerData().c_str();
 
-		for (int i = 0;i < advertisedDevice.getServiceDataCount();i++)
-		{
-			BleEnvironment[mac]["Services"][i] = advertisedDevice.getServiceData(i).c_str();
-		}
+		BleEnvironment.add(mac);
+		//auto& jo2 = BleEnvironment.createNestedObject(mac);
+
+		//jo2["Name"] = advertisedDevice.getName().c_str();
+		//jo2["ManufacturerData"] = advertisedDevice.getManufacturerData().c_str();
+
+		//BleEnvironment[mac] = jo2;
+
+
+		//for (int i = 0;i < advertisedDevice.getServiceDataCount();i++)
+		//{
+		//	auto& serv = jo2.createNestedArray("Services");
+		//	
+		//	serv[i] = advertisedDevice.getServiceData(i).c_str();
+		//	//Serial.println(advertisedDevice.getServiceData(i).c_str());
+		//}
+		//Serial.println("end create json");
+		//String str;
+		//BleEnvironment.printTo(str);
+
+		//Serial.println(str);
 	}
 };
 
 void BLEScanSetup()
 {
 	//Serial.println("Scanning...");
-
+	Serial.println("BLEScanSetup start");
 	BLEDevice::init("");
 	pBLEScan = BLEDevice::getScan(); //create new scan
 	pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
 	pBLEScan->setActiveScan(true); //active scan uses more power, but get results faster
 	pBLEScan->setInterval(100);
 	pBLEScan->setWindow(99);  // less or equal setInterval value // less or equal setInterval value
-//BLEScanLoop()
-	/*BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
-	Serial.print("Devices found: ");
-	Serial.println(foundDevices.getCount());
-	for (int i = 0;i < foundDevices.getCount(); i++)
-	{
-		auto dev = foundDevices.getDevice(i);
-		Serial.println(dev.getAddress().toString().c_str());
-	}
+	Serial.println("BLEScanSetup end");
+	//BLEScanLoop()
+		//BLEScanResults foundDevices = pBLEScan->start(scanTime, false);
+		/*Serial.print("Devices found: ");
+		Serial.println(foundDevices.getCount());*/
+		/*for (int i = 0;i < foundDevices.getCount(); i++)
+		{
+			auto dev = foundDevices.getDevice(i);
+			Serial.println(dev.getAddress().toString().c_str());
+		}*/
 
-	Serial.println("=============================================");*/
+	Serial.println("=============================================");
 
 
 	//Serial.println("Scan done!");
@@ -116,20 +229,54 @@ void HttpSetup()
 		}
 		request->send(200, "text/plain", "Hello, GET: " + message);
 		});
-	//GetScan
+	//StartScan
 	HTTPServer.on("/StartScan", HTTP_GET, [](AsyncWebServerRequest* request)
 		{
 			StartScan = true;
+			Serial.println("request - StartScan");
 			request->send(200, "text/plain", String(StartScan));
 		});
 
 
 	//GetScanResults
 	HTTPServer.on("/GetScanResults", HTTP_GET, [](AsyncWebServerRequest* request) {
+		Serial.println("GetScanResults start");
 		AsyncResponseStream* response = request->beginResponseStream("application/json");
-		serializeJson(BleEnvironment,*response);
+		BleEnvironment.printTo(*response);
 		request->send(response);
+		Serial.println("GetScanResults stop");
+		});
 
+	//GetCharacteristics <IP>/GetCharacteristics?mac=<mac>
+//GetCharacteristics?mac=c4:4f:33:7f:cb:9b&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003
+	HTTPServer.on("/GetCharacteristics", HTTP_GET, [](AsyncWebServerRequest* request) {
+		Serial.println("GetCharacteristics start");
+
+		if (request->hasParam(PARAM_MESSAGE1)) {
+			BLEmac = request->getParam(PARAM_MESSAGE1)->value();
+		}
+
+		request->send(200, "text/plain", "Hello, BLEmac: " + BLEmac);
+		BLEConnect = true;
+		Serial.println("GetCharacteristics  stop");
+		});
+	//GetCharacteristicsResult
+	HTTPServer.on("/GetCharacteristicsResult", HTTP_GET, [](AsyncWebServerRequest* request) {
+		Serial.println("GetCharacteristicsResult start");
+		TempretureValue = "18";
+		String json = "[";
+		if (i) json += ",";
+		json += "{";
+		json += "\"TempretureValue\":" + String(TempretureValue.c_str()) + ";";
+		json += "\"HumiditiGroundValue\":" + String(HumiditiGroundValue.c_str()) + ";";
+		json += "\"HumiditiAirValue\":" + String(HumiditiAirValue.c_str()) + ";";
+		json += "\"VoltageValue\":" + String(VoltageValue.c_str()) + ";";
+		json += "\"PressureValue\":" + String(PressureValue.c_str()) + ";";
+		json += "\"TestValue\":" + String(TestValue.c_str()) + ";";
+		json += "}";
+		json += "]";
+		request->send(200, "application/json", json);
+		json = String();
 		});
 	// Send a POST request to <IP>/post with a form field message set to <message>
 	HTTPServer.on("/post", HTTP_POST, [](AsyncWebServerRequest* request) {
@@ -149,7 +296,7 @@ void HttpSetup()
 }
 
 
-//
+
 //String GetScan(uint8_t* buffer, size_t maxLen) {
 //
 //
@@ -188,29 +335,8 @@ void HttpSetup()
 //
 //	return json;
 //}
-//
 
-//void TaskCode1(void* parameter)
-//{
-//		Serial.print("task1 core ");
-//		Serial.println(xPortGetCoreID());
-//		BLEScanSetup();
-//}
-//void TaskCode2(void* parameter)
-//{
-//
-//		Serial.print("task2 core ");
-//		Serial.println(xPortGetCoreID());
-//		HttpSetup();
-//}
-//
-//void Master(void* parameter)
-//{
-//	while (true)
-//	{
-//
-//	}
-//}
+
 
 void setup()
 {
@@ -255,8 +381,23 @@ void setup()
 
 void loop() {
 	if (StartScan) {
+		Serial.println("loop - StartScan");
+		delay(50);
+		//jsonBuffer.clear();
 		pBLEScan->start(scanTime, false);
+		Serial.println("loop - EndScan");
+
 		StartScan = false;
+	}
+	if (BLEConnect)
+	{
+		Serial.println("StartBLEConnect");
+		if (connectToServer())
+		{
+			GetBLECharacteristics();
+		}
+		disconnectFromServer();
+		Serial.println("EndBLEConnect");
 	}
 	delay(1000);
 }
