@@ -5,19 +5,20 @@
 */
 
 //#define CONFIG_SW_COEXIST_ENABLE 1
+#define CONFIG_BT_ENABLED
 
-
-#include <ArduinoJson.h>
+#include "ArduinoJson.h"
 #include <HardwareSerial.h>
 #include <Arduino.h>
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <AsyncJson.h>
 #include <ESPAsyncWebServer.h>
-#include <BLEDevice.h>
+#include "BLEDevice.h"
 #include <BLEUtils.h>
 #include <BLEScan.h>
 #include <BLEAdvertisedDevice.h>
+
 
 AsyncWebServer HTTPServer(80);
 
@@ -30,7 +31,6 @@ const char* password = "x9Wd86wG";
 
 const char* PARAM_MESSAGE = "message";
 const char* PARAM_MESSAGE1 = "mac";
-const char* PARAM_MESSAGE2 = "UUID";
 
 BLEClient* pClient;
 
@@ -50,24 +50,33 @@ int i;
 #define Test_UUID "94ec9a22-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ac
 #define Pressure_UUID "94ec9cac-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ad
 
-BLEUUID SensorBleClient::serviceUUID = BLEUUID(SERVICE_UUID);
-BLEUUID SensorBleClient::Tempreture_CHARACTERISTIC_UUID = BLEUUID(Tempreture_UUID);
-BLEUUID SensorBleClient::HumiditiGround_CHARACTERISTIC_UUID = BLEUUID(HumiditiGround_UUID);
-BLEUUID SensorBleClient::HumiditiAir_CHARACTERISTIC_UUID = BLEUUID(HumiditiAir_UUID);
-BLEUUID SensorBleClient::Voltage_CHARACTERISTIC_UUID = BLEUUID(Voltage_UUID);
-BLEUUID SensorBleClient::Test_CHARACTERISTIC_UUID = BLEUUID(Test_UUID);
-BLEUUID SensorBleClient::Pressure_CHARACTERISTIC_UUID = BLEUUID(Pressure_UUID);
 
-BLERemoteCharacteristic* SensorBleClient::Tempreture_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* SensorBleClient::HumiditiGround_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* SensorBleClient::HumiditiAir_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* SensorBleClient::Voltage_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* SensorBleClient::Test_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* SensorBleClient::Pressure_CHARACTERISTIC = NULL;
+
+BLEUUID serviceUUID = BLEUUID(SERVICE_UUID);
+BLEUUID Tempreture_CHARACTERISTIC_UUID = BLEUUID(Tempreture_UUID);
+BLEUUID HumiditiGround_CHARACTERISTIC_UUID = BLEUUID(HumiditiGround_UUID);
+BLEUUID HumiditiAir_CHARACTERISTIC_UUID = BLEUUID(HumiditiAir_UUID);
+BLEUUID Voltage_CHARACTERISTIC_UUID = BLEUUID(Voltage_UUID);
+BLEUUID Test_CHARACTERISTIC_UUID = BLEUUID(Test_UUID);
+BLEUUID Pressure_CHARACTERISTIC_UUID = BLEUUID(Pressure_UUID);
+
+BLERemoteCharacteristic* Tempreture_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* HumiditiGround_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* HumiditiAir_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* Voltage_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* Test_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* Pressure_CHARACTERISTIC = NULL;
+
+std::string TempretureValue;
+std::string HumiditiGroundValue;
+std::string HumiditiAirValue;
+std::string VoltageValue;
+std::string TestValue;
+std::string PressureValue;
 
 
 String BLEmac;
-String BLEUUID;
+String BLEuuid;
 
 
 class MyClientCallback : public BLEClientCallbacks {
@@ -114,7 +123,13 @@ void disconnectFromServer()
 
 bool GetBLECharacteristics() {
 	BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
-
+	Serial.println(serviceUUID.toString().c_str());
+	TempretureValue = Tempreture_CHARACTERISTIC->readValue();
+	HumiditiGroundValue = HumiditiGround_CHARACTERISTIC->readValue();
+	HumiditiAirValue = HumiditiAir_CHARACTERISTIC->readValue();
+	VoltageValue = Voltage_CHARACTERISTIC->readValue();
+	TestValue = Test_CHARACTERISTIC->readValue();
+	PressureValue = Pressure_CHARACTERISTIC->readValue();
 	return true;
 }
 
@@ -125,7 +140,6 @@ int scanTime = 5; //In seconds
 BLEScan* pBLEScan;
 
 StaticJsonDocument<1024> BleEnvironment;
-
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 	void onResult(BLEAdvertisedDevice advertisedDevice) {
@@ -232,19 +246,37 @@ void HttpSetup()
 		request->send(response);
 		Serial.println("GetScanResults stop");
 		});
-	//GetCharacteristics <IP>/GetCharacteristics?mac=<mac>&UUIDs=<UUID>,<UUID>
-http://192.168.1.49/GetCharacteristics?mac=c4:4f:33:7f:cb:9b&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003
+
+	//GetCharacteristics <IP>/GetCharacteristics?mac=<mac>
+//GetCharacteristics?mac=c4:4f:33:7f:cb:9b&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003&UUID=94ec923e-b5a6-11eb-8529-0242ac130003
 	HTTPServer.on("/GetCharacteristics", HTTP_GET, [](AsyncWebServerRequest* request) {
 		Serial.println("GetCharacteristics start");
 
 		if (request->hasParam(PARAM_MESSAGE1)) {
 			BLEmac = request->getParam(PARAM_MESSAGE1)->value();
-			BLEUUID = request->getParam(PARAM_MESSAGE2)->value();
 		}
 
-		request->send(200, "text/plain", "Hello, GET: " + BLEmac + BLEUUID);
+		request->send(200, "text/plain", "Hello, BLEmac: " + BLEmac);
 		BLEConnect = true;
 		Serial.println("GetCharacteristics  stop");
+		});
+	//GetCharacteristicsResult
+	HTTPServer.on("/GetCharacteristicsResult", HTTP_GET, [](AsyncWebServerRequest* request) {
+		Serial.println("GetCharacteristicsResult start");
+		TempretureValue = "18";
+		String json = "[";
+		if (i) json += ",";
+		json += "{";
+		json += "\"TempretureValue\":" + String(TempretureValue.c_str()) + ";";
+		json += "\"HumiditiGroundValue\":" + String(HumiditiGroundValue.c_str()) + ";";
+		json += "\"HumiditiAirValue\":" + String(HumiditiAirValue.c_str()) + ";";
+		json += "\"VoltageValue\":" + String(VoltageValue.c_str()) + ";";
+		json += "\"PressureValue\":" + String(PressureValue.c_str()) + ";";
+		json += "\"TestValue\":" + String(TestValue.c_str()) + ";";
+		json += "}";
+		json += "]";
+		request->send(200, "application/json", json);
+		json = String();
 		});
 	// Send a POST request to <IP>/post with a form field message set to <message>
 	HTTPServer.on("/post", HTTP_POST, [](AsyncWebServerRequest* request) {
@@ -330,11 +362,13 @@ void loop() {
 	}
 	if (BLEConnect)
 	{
+		Serial.println("StartBLEConnect");
 		if (connectToServer())
 		{
 			GetBLECharacteristics();
 		}
 		disconnectFromServer();
+		Serial.println("EndBLEConnect");
 	}
 	delay(1000);
 }
