@@ -11,15 +11,15 @@ bool SensorBleClient::doScan = false;
 
 BLEUUID SensorBleClient::serviceUUID = BLEUUID(SERVICE_UUID);
 BLEUUID SensorBleClient::Tempreture_CHARACTERISTIC_UUID = BLEUUID(Tempreture_UUID);
-BLEUUID SensorBleClient::HumiditiGround_CHARACTERISTIC_UUID = BLEUUID(HumiditiGround_UUID);
-BLEUUID SensorBleClient::HumiditiAir_CHARACTERISTIC_UUID = BLEUUID(HumiditiAir_UUID);
+BLEUUID SensorBleClient::HumidityGround_CHARACTERISTIC_UUID = BLEUUID(HumidityGround_UUID);
+BLEUUID SensorBleClient::HumidityAir_CHARACTERISTIC_UUID = BLEUUID(HumidityAir_UUID);
 BLEUUID SensorBleClient::Voltage_CHARACTERISTIC_UUID = BLEUUID(Voltage_UUID);
 BLEUUID SensorBleClient::Test_CHARACTERISTIC_UUID = BLEUUID(Test_UUID);
 BLEUUID SensorBleClient::Pressure_CHARACTERISTIC_UUID = BLEUUID(Pressure_UUID);
 
 BLERemoteCharacteristic* SensorBleClient::Tempreture_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* SensorBleClient::HumiditiGround_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* SensorBleClient::HumiditiAir_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* SensorBleClient::HumidityGround_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* SensorBleClient::HumidityAir_CHARACTERISTIC = NULL;
 BLERemoteCharacteristic* SensorBleClient::Voltage_CHARACTERISTIC = NULL;
 BLERemoteCharacteristic* SensorBleClient::Test_CHARACTERISTIC = NULL;
 BLERemoteCharacteristic* SensorBleClient::Pressure_CHARACTERISTIC = NULL;
@@ -112,8 +112,8 @@ bool SensorBleClient::connectToServer() {
 	// Obtain a reference to the characteristic in the service of the remote BLE server.
 	Serial.println("Get Temperature");
 	Tempreture_CHARACTERISTIC = pRemoteService->getCharacteristic(Tempreture_CHARACTERISTIC_UUID);
-	HumiditiGround_CHARACTERISTIC = pRemoteService->getCharacteristic(HumiditiGround_CHARACTERISTIC_UUID);
-	HumiditiAir_CHARACTERISTIC = pRemoteService->getCharacteristic(HumiditiAir_CHARACTERISTIC_UUID);
+	HumidityGround_CHARACTERISTIC = pRemoteService->getCharacteristic(HumidityGround_CHARACTERISTIC_UUID);
+	HumidityAir_CHARACTERISTIC = pRemoteService->getCharacteristic(HumidityAir_CHARACTERISTIC_UUID);
 	Voltage_CHARACTERISTIC = pRemoteService->getCharacteristic(Voltage_CHARACTERISTIC_UUID);
 	Pressure_CHARACTERISTIC = pRemoteService->getCharacteristic(Pressure_CHARACTERISTIC_UUID);
 	
@@ -129,28 +129,28 @@ bool SensorBleClient::connectToServer() {
 		Serial.println(temperature);
 	}
 
-	if (HumiditiGround_CHARACTERISTIC == nullptr)
+	if (HumidityGround_CHARACTERISTIC == nullptr)
 	{
-		Serial.println("Failed to find HumiditiGround characteristic");
+		Serial.println("Failed to find HumidityGround characteristic");
 	}
 	else
 	{
-		Serial.print("HumiditiGround: ");
-		uint32_t HMG = HumiditiGround_CHARACTERISTIC->readUInt32();
-		float HumiditiGround = *((float*)&HMG);
-		Serial.println(HumiditiGround);
+		Serial.print("HumidityGround: ");
+		uint32_t HMG = HumidityGround_CHARACTERISTIC->readUInt32();
+		float HumidityGround = *((float*)&HMG);
+		Serial.println(HumidityGround);
 	}
 
-	if (HumiditiAir_CHARACTERISTIC == nullptr)
+	if (HumidityAir_CHARACTERISTIC == nullptr)
 	{
-		Serial.println("Failed to find HumiditiAir characteristic");
+		Serial.println("Failed to find HumidityAir characteristic");
 	}
 	else
 	{
-		Serial.print("HumiditiAir: ");
-		uint32_t HMA = HumiditiAir_CHARACTERISTIC->readUInt32();
-		float HumiditiAir = *((float*)&HMA);
-		Serial.println(HumiditiAir);
+		Serial.print("HumidityAir: ");
+		uint32_t HMA = HumidityAir_CHARACTERISTIC->readUInt32();
+		float HumidityAir = *((float*)&HMA);
+		Serial.println(HumidityAir);
 	}
 
 	if (Voltage_CHARACTERISTIC == nullptr)
@@ -191,8 +191,8 @@ bool SensorBleClient::connectToServer() {
 
 
 
-	//Serial.println(HumiditiGround_CHARACTERISTIC_UUID.toString().c_str());
-	//Serial.println(HumiditiAir_CHARACTERISTIC_UUID.toString().c_str());
+	//Serial.println(HumidityGround_CHARACTERISTIC_UUID.toString().c_str());
+	//Serial.println(HumidityAir_CHARACTERISTIC_UUID.toString().c_str());
 	//Serial.println(Voltage_CHARACTERISTIC_UUID.toString().c_str());
 	//Serial.println(Test_CHARACTERISTIC_UUID.toString().c_str());
 	//Serial.println(" - Found our characteristic");

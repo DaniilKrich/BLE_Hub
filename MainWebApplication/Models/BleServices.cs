@@ -9,6 +9,8 @@ namespace MainWebApplication
 {
     public class BleServices : List<BleService>
     {
+        public virtual BleHub BleHub{ get; set; }
+
         public BleServices()
         {
         }

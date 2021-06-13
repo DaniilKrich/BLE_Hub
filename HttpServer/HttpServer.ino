@@ -20,6 +20,7 @@
 #include <BLEAdvertisedDevice.h>
 
 
+
 AsyncWebServer HTTPServer(80);
 
 bool StartScan = false;
@@ -44,8 +45,8 @@ int i;
 
 #define SERVICE_UUID "94ec923e-b5a6-11eb-8529-0242ac130003" // 4fafc201-1fb5-459e-8fcc-c5c9c331914b
 #define Tempreture_UUID "94ec96e4-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26a8
-#define HumiditiGround_UUID "94ec97de-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26a9
-#define HumiditiAir_UUID "94ec989c-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26aa
+#define HumidityGround_UUID "94ec97de-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26a9
+#define HumidityAir_UUID "94ec989c-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26aa
 #define Voltage_UUID "94ec9964-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ab
 #define Test_UUID "94ec9a22-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ac
 #define Pressure_UUID "94ec9cac-b5a6-11eb-8529-0242ac130003" // beb5483e-36e1-4688-b7f5-ea07361b26ad
@@ -54,22 +55,22 @@ int i;
 
 BLEUUID serviceUUID = BLEUUID(SERVICE_UUID);
 BLEUUID Tempreture_CHARACTERISTIC_UUID = BLEUUID(Tempreture_UUID);
-BLEUUID HumiditiGround_CHARACTERISTIC_UUID = BLEUUID(HumiditiGround_UUID);
-BLEUUID HumiditiAir_CHARACTERISTIC_UUID = BLEUUID(HumiditiAir_UUID);
+BLEUUID HumidityGround_CHARACTERISTIC_UUID = BLEUUID(HumidityGround_UUID);
+BLEUUID HumidityAir_CHARACTERISTIC_UUID = BLEUUID(HumidityAir_UUID);
 BLEUUID Voltage_CHARACTERISTIC_UUID = BLEUUID(Voltage_UUID);
 BLEUUID Test_CHARACTERISTIC_UUID = BLEUUID(Test_UUID);
 BLEUUID Pressure_CHARACTERISTIC_UUID = BLEUUID(Pressure_UUID);
 
 BLERemoteCharacteristic* Tempreture_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* HumiditiGround_CHARACTERISTIC = NULL;
-BLERemoteCharacteristic* HumiditiAir_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* HumidityGround_CHARACTERISTIC = NULL;
+BLERemoteCharacteristic* HumidityAir_CHARACTERISTIC = NULL;
 BLERemoteCharacteristic* Voltage_CHARACTERISTIC = NULL;
 BLERemoteCharacteristic* Test_CHARACTERISTIC = NULL;
 BLERemoteCharacteristic* Pressure_CHARACTERISTIC = NULL;
 
 std::string TempretureValue;
-std::string HumiditiGroundValue;
-std::string HumiditiAirValue;
+std::string HumidityGroundValue;
+std::string HumidityAirValue;
 std::string VoltageValue;
 std::string TestValue;
 std::string PressureValue;
@@ -125,8 +126,8 @@ bool GetBLECharacteristics() {
 	BLERemoteService* pRemoteService = pClient->getService(serviceUUID);
 	Serial.println(serviceUUID.toString().c_str());
 	TempretureValue = Tempreture_CHARACTERISTIC->readValue();
-	HumiditiGroundValue = HumiditiGround_CHARACTERISTIC->readValue();
-	HumiditiAirValue = HumiditiAir_CHARACTERISTIC->readValue();
+	HumidityGroundValue = HumidityGround_CHARACTERISTIC->readValue();
+	HumidityAirValue = HumidityAir_CHARACTERISTIC->readValue();
 	VoltageValue = Voltage_CHARACTERISTIC->readValue();
 	TestValue = Test_CHARACTERISTIC->readValue();
 	PressureValue = Pressure_CHARACTERISTIC->readValue();
@@ -139,7 +140,9 @@ int scanTime = 5; //In seconds
 
 BLEScan* pBLEScan;
 
-StaticJsonDocument<1024> BleEnvironment;
+
+
+ARDUINOJSON_NAMESPACE::StaticJsonDocument<1024> BleEnvironment;
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
 	void onResult(BLEAdvertisedDevice advertisedDevice) {
@@ -242,7 +245,7 @@ void HttpSetup()
 	HTTPServer.on("/GetScanResults", HTTP_GET, [](AsyncWebServerRequest* request) {
 		Serial.println("GetScanResults start");
 		AsyncResponseStream* response = request->beginResponseStream("application/json");
-		BleEnvironment.printTo(*response);
+	     BleEnvironment.printTo(*response);
 		request->send(response);
 		Serial.println("GetScanResults stop");
 		});
@@ -268,8 +271,8 @@ void HttpSetup()
 		if (i) json += ",";
 		json += "{";
 		json += "\"TempretureValue\":" + String(TempretureValue.c_str()) + ";";
-		json += "\"HumiditiGroundValue\":" + String(HumiditiGroundValue.c_str()) + ";";
-		json += "\"HumiditiAirValue\":" + String(HumiditiAirValue.c_str()) + ";";
+		json += "\"HumidityGroundValue\":" + String(HumidityGroundValue.c_str()) + ";";
+		json += "\"HumidityAirValue\":" + String(HumidityAirValue.c_str()) + ";";
 		json += "\"VoltageValue\":" + String(VoltageValue.c_str()) + ";";
 		json += "\"PressureValue\":" + String(PressureValue.c_str()) + ";";
 		json += "\"TestValue\":" + String(TestValue.c_str()) + ";";

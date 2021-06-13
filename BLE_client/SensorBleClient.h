@@ -7,8 +7,8 @@
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define Tempreture_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
-#define HumiditiGround_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a9"
-#define HumiditiAir_UUID "beb5483e-36e1-4688-b7f5-ea07361b26aa"
+#define HumidityGround_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a9"
+#define HumidityAir_UUID "beb5483e-36e1-4688-b7f5-ea07361b26aa"
 #define Voltage_UUID "beb5483e-36e1-4688-b7f5-ea07361b26ab"
 #define Test_UUID "beb5483e-36e1-4688-b7f5-ea07361b26ac"
 #define Pressure_UUID "beb5483e-36e1-4688-b7f5-ea07361b26ad"
@@ -26,8 +26,8 @@ public:
 	static	BLEUUID serviceUUID;// ("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
 	// The characteristic of the remote service we are interested in.
 	static	BLEUUID    Tempreture_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26a8");
-	static	BLEUUID    HumiditiGround_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26a9");
-	static	BLEUUID    HumiditiAir_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26aa");
+	static	BLEUUID    HumidityGround_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26a9");
+	static	BLEUUID    HumidityAir_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26aa");
 	static	BLEUUID    Voltage_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26ab");
 	static	BLEUUID    Test_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26ac");
 	static	BLEUUID    Pressure_CHARACTERISTIC_UUID;// ("beb5483e-36e1-4688-b7f5-ea07361b26ac");
@@ -35,8 +35,8 @@ public:
 	static bool doConnect;
 	static bool doScan;
 	static BLERemoteCharacteristic* Tempreture_CHARACTERISTIC;
-	static BLERemoteCharacteristic* HumiditiGround_CHARACTERISTIC;
-	static BLERemoteCharacteristic* HumiditiAir_CHARACTERISTIC;
+	static BLERemoteCharacteristic* HumidityGround_CHARACTERISTIC;
+	static BLERemoteCharacteristic* HumidityAir_CHARACTERISTIC;
 	static BLERemoteCharacteristic* Voltage_CHARACTERISTIC;
 	static BLERemoteCharacteristic* Test_CHARACTERISTIC;
 	static BLERemoteCharacteristic* Pressure_CHARACTERISTIC;

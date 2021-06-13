@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 
 namespace MainWebApplication
 {
-    public abstract class Channel
+    public class Channel
     {
+        public virtual BleService BleService { get; set; }
+
         public ulong ID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

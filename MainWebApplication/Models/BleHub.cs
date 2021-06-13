@@ -9,13 +9,29 @@ using System.Threading.Tasks;
 
 namespace MainWebApplication
 {
-    public class BleHub
+    public class BleHub 
     {
+        private string webRequestRoot => $"http://{Name}/";
+
+        /// <summary>
+        /// MAC or physical address
+        /// </summary>
+        //public int ID { get; set; }
+
+        //public IPAddress IpAddress { get; set; }
+
+        [Key]
+        public string Name { get; set; }
+        public string Description { get; set; }
+
+        
+
+
+
         public BleHub()
         {
         }
 
-        private string webRequestRoot => $"http://{Name}/";
 
         public BleHub(string name)
         {
@@ -48,18 +64,6 @@ namespace MainWebApplication
 
         }
 
-        /// <summary>
-        /// MAC or physical address
-        /// </summary>
-        public int ID { get; set; }
-
-        //public IPAddress IpAddress { get; set; }
-
-        [Key]
-        public string Name { get; set; }
-        public string Description { get; set; }
-
-        public List<Node> Nodes { get; set; }
 
         internal BleServices GetBleServices(byte[] bleAdr)
         {
