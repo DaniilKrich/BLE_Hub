@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MainWebApplication.Models
 {
-    public class Nodes : List<BleServer>
+    public class BleCharacteristics: List<BleCharacteristic>
     {
     }
 }

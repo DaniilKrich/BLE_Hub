@@ -102,8 +102,8 @@ namespace MainWebApplication.Controllers
         // GetChannels(blehub,Service)
         public JsonResult GetChannels(BleHub bleHub, BleService bleService)
         {
-            DigitalChannel digitalChannel = new DigitalChannel();
-            AnalogChannel analogChannel = new AnalogChannel();
+            DigitalBleCharacteristic digitalChannel = new DigitalBleCharacteristic();
+            AnalogBleCharacteristic analogChannel = new AnalogBleCharacteristic();
             return new JsonResult("");
         }
         // GetChannel(blehub,Service,channel)

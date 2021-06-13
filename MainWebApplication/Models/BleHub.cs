@@ -7,9 +7,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainWebApplication
+namespace MainWebApplication.Models
 {
-    public class BleHub 
+    public class BleHub: Nodes
     {
         private string webRequestRoot => $"http://{Name}/";
 

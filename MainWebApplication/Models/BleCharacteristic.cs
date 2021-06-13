@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MainWebApplication
+namespace MainWebApplication.Models
 {
-    public class Channel
+    public class BleCharacteristic
     {
         public virtual BleService BleService { get; set; }
 
-        public ulong ID { get; set; }
+        public Guid CUUID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
 

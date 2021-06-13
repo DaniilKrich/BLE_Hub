@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MainWebApplication
+namespace MainWebApplication.Models
 {
-    public class Node : BleServices
+    public class BleServer : BleServices
     {
+        public virtual BleHub BleHub { get; set; }
+
+
+
         /// 
         //public int ID { get; set; }
         public byte[] BleAdr { get; } = new byte[6];
         public string Name { get; set; }
         public BleServices GetBleServices()
         {
-            return BleHub.GetBleServices(BleAdr);
+            return new BleServices();// GetBleServices(BleAdr);
         }
     }
 }

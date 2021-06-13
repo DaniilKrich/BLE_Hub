@@ -6,8 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MainWebApplication.Data;
+using MainWebApplication.Models;
 
-namespace MainWebApplication
+namespace MainWebApplication.Controllers
 {
     public class BleHubsController : Controller
     {

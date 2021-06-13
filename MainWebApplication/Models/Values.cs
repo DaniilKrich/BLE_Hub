@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MainWebApplication.Models
 {
-    public class Nodes : List<BleServer>
+    public class Values<T> : Dictionary<DateTime, T>
     {
     }
 }

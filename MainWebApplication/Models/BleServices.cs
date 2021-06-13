@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Collections;
 
-namespace MainWebApplication
+namespace MainWebApplication.Models
 {
     public class BleServices : List<BleService>
     {
-        public virtual BleHub BleHub{ get; set; }
+        public virtual BleServer Node{ get; set; }
 
         public BleServices()
         {

@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace MainWebApplication
+namespace MainWebApplication.Models
 {
-    public class BleService
+    public class BleService: BleCharacteristics
     {
-        public virtual BleServices BleServices { get; set; }
-
-
+        public virtual BleServer BleServer { get; set; }
 
         /// <summary>
         /// </summary>
-        [Key]
-        public string GUID { get; set; }
+        public Guid SUUID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-
-        public List<Channel> Channels { get; set; }
     }
 }
