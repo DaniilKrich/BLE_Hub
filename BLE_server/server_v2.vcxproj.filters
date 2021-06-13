@@ -15,6 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="BLE_client.ino" />
+    <None Include="server_v2.ino" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="__vm\.server_v2.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyServerCallbacks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="__vm\.BLE_server.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MyServerCallbacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
