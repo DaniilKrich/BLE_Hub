@@ -111,18 +111,6 @@
       <FileType>CppCode</FileType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="MyAdvertisedDeviceCallbacks.h" />
-    <ClInclude Include="MyClientCallback.h" />
-    <ClInclude Include="SensorBleClient.h" />
-    <ClInclude Include="__vm\.BLE_client.vsarduino.h" />
-    <ClInclude Include="__vm\.BLE_client_V2.vsarduino.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="MyAdvertisedDeviceCallbacks.cpp" />
-    <ClCompile Include="MyClientCallback.cpp" />
-    <ClCompile Include="SensorBleClient.cpp" />
-  </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
   </PropertyGroup>
