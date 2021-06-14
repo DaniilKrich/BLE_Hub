@@ -15,28 +15,33 @@ namespace MainWebApplication.Data
         {
         }
 
-        public DbSet<BleHub> BleHub { get; set; }
+        public DbSet<BleHub> BleHubs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<BleHub>()
-                .HasKey(c => new { c.Name });
+            modelBuilder.Entity<BleHub>();
 
             modelBuilder.Entity<BleServer>()
                 .HasOne(b => b.BleHub)
-                .WithMany(h => h)
-                .HasForeignKey(c => new { c.BleHub.Name, c.BleAdr });
+                .WithMany(h => h.BleServers);
+            //.HasForeignKey(c => new { c.BleHub.Name, c.BleAdr });
 
             modelBuilder.Entity<BleService>()
                 .HasOne(b => b.BleServer)
-                .WithMany(b => b)
-                .HasForeignKey(c => new { c.BleServer.BleHub.Name, c.BleServer.BleAdr, c.SUUID });
+                .WithMany(b => b.BleServices);
+            //.HasForeignKey(c => new { c.BleServer.BleHub.Name, c.BleServer.BleAdr, c.SUUID });
 
+            modelBuilder.Entity<DigitalBleCharacteristic>();
+            modelBuilder.Entity<AnalogBleCharacteristic>();
             modelBuilder.Entity<BleCharacteristic>()
-                .HasOne(c=>c.BleService)
-                .WithMany(b=>b)
-                .HasForeignKey(c => new { c.BleService.BleServer.BleHub.Name, c.BleService.BleServer.BleAdr, c.BleService.SUUID, c.CUUID });
+                .HasOne(c => c.BleService)
+                .WithMany(b => b.BleCharacteristics);
+                //.HasForeignKey(c => new { c.BleService.BleServer.BleHub.Name, c.BleService.BleServer.BleAdr, c.BleService.SUUID, c.CUUID });
         }
+
+        public DbSet<MainWebApplication.Models.BleServer> BleServer { get; set; }
+
+        public DbSet<MainWebApplication.Models.BleService> BleService { get; set; }
 
 
     }

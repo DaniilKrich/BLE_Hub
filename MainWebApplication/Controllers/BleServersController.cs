@@ -10,22 +10,22 @@ using MainWebApplication.Models;
 
 namespace MainWebApplication.Controllers
 {
-    public class BleHubsController : Controller
+    public class BleServersController : Controller
     {
         private readonly MainWebApplicationContext _context;
 
-        public BleHubsController(MainWebApplicationContext context)
+        public BleServersController(MainWebApplicationContext context)
         {
             _context = context;
         }
 
-        // GET: BleHubs
+        // GET: BleServers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BleHubs.ToListAsync());
+            return View(await _context.BleServer.ToListAsync());
         }
 
-        // GET: BleHubs/Details/5
+        // GET: BleServers/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace MainWebApplication.Controllers
                 return NotFound();
             }
 
-            var bleHub = await _context.BleHubs
-                .FirstOrDefaultAsync(m => m.BleHubID == id);
-            if (bleHub == null)
+            var bleServer = await _context.BleServer
+                .FirstOrDefaultAsync(m => m.BleServerID == id);
+            if (bleServer == null)
             {
                 return NotFound();
             }
 
-            return View(bleHub);
+            return View(bleServer);
         }
 
-        // GET: BleHubs/Create
+        // GET: BleServers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: BleHubs/Create
+        // POST: BleServers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BleHubID,Name,Description")] BleHub bleHub)
+        public async Task<IActionResult> Create([Bind("BleServerID,Name")] BleServer bleServer)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bleHub);
+                _context.Add(bleServer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(bleHub);
+            return View(bleServer);
         }
 
-        // GET: BleHubs/Edit/5
+        // GET: BleServers/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace MainWebApplication.Controllers
                 return NotFound();
             }
 
-            var bleHub = await _context.BleHubs.FindAsync(id);
-            if (bleHub == null)
+            var bleServer = await _context.BleServer.FindAsync(id);
+            if (bleServer == null)
             {
                 return NotFound();
             }
-            return View(bleHub);
+            return View(bleServer);
         }
 
-        // POST: BleHubs/Edit/5
+        // POST: BleServers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("BleHubID,Name,Description")] BleHub bleHub)
+        public async Task<IActionResult> Edit(long id, [Bind("BleServerID,Name")] BleServer bleServer)
         {
-            if (id != bleHub.BleHubID)
+            if (id != bleServer.BleServerID)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace MainWebApplication.Controllers
             {
                 try
                 {
-                    _context.Update(bleHub);
+                    _context.Update(bleServer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BleHubExists(bleHub.BleHubID))
+                    if (!BleServerExists(bleServer.BleServerID))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace MainWebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(bleHub);
+            return View(bleServer);
         }
 
-        // GET: BleHubs/Delete/5
+        // GET: BleServers/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace MainWebApplication.Controllers
                 return NotFound();
             }
 
-            var bleHub = await _context.BleHubs
-                .FirstOrDefaultAsync(m => m.BleHubID == id);
-            if (bleHub == null)
+            var bleServer = await _context.BleServer
+                .FirstOrDefaultAsync(m => m.BleServerID == id);
+            if (bleServer == null)
             {
                 return NotFound();
             }
 
-            return View(bleHub);
+            return View(bleServer);
         }
 
-        // POST: BleHubs/Delete/5
+        // POST: BleServers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var bleHub = await _context.BleHubs.FindAsync(id);
-            _context.BleHubs.Remove(bleHub);
+            var bleServer = await _context.BleServer.FindAsync(id);
+            _context.BleServer.Remove(bleServer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BleHubExists(long id)
+        private bool BleServerExists(long id)
         {
-            return _context.BleHubs.Any(e => e.BleHubID == id);
+            return _context.BleServer.Any(e => e.BleServerID == id);
         }
     }
 }

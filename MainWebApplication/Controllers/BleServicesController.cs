@@ -10,22 +10,22 @@ using MainWebApplication.Models;
 
 namespace MainWebApplication.Controllers
 {
-    public class BleHubsController : Controller
+    public class BleServicesController : Controller
     {
         private readonly MainWebApplicationContext _context;
 
-        public BleHubsController(MainWebApplicationContext context)
+        public BleServicesController(MainWebApplicationContext context)
         {
             _context = context;
         }
 
-        // GET: BleHubs
+        // GET: BleServices
         public async Task<IActionResult> Index()
         {
-            return View(await _context.BleHubs.ToListAsync());
+            return View(await _context.BleService.ToListAsync());
         }
 
-        // GET: BleHubs/Details/5
+        // GET: BleServices/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace MainWebApplication.Controllers
                 return NotFound();
             }
 
-            var bleHub = await _context.BleHubs
-                .FirstOrDefaultAsync(m => m.BleHubID == id);
-            if (bleHub == null)
+            var bleService = await _context.BleService
+                .FirstOrDefaultAsync(m => m.BleServiceID == id);
+            if (bleService == null)
             {
                 return NotFound();
             }
 
-            return View(bleHub);
+            return View(bleService);
         }
 
-        // GET: BleHubs/Create
+        // GET: BleServices/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: BleHubs/Create
+        // POST: BleServices/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BleHubID,Name,Description")] BleHub bleHub)
+        public async Task<IActionResult> Create([Bind("BleServiceID,SUUID,Name,Description")] BleService bleService)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(bleHub);
+                _context.Add(bleService);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(bleHub);
+            return View(bleService);
         }
 
-        // GET: BleHubs/Edit/5
+        // GET: BleServices/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace MainWebApplication.Controllers
                 return NotFound();
             }
 
-            var bleHub = await _context.BleHubs.FindAsync(id);
-            if (bleHub == null)
+            var bleService = await _context.BleService.FindAsync(id);
+            if (bleService == null)
             {
                 return NotFound();
             }
-            return View(bleHub);
+            return View(bleService);
         }
 
-        // POST: BleHubs/Edit/5
+        // POST: BleServices/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("BleHubID,Name,Description")] BleHub bleHub)
+        public async Task<IActionResult> Edit(long id, [Bind("BleServiceID,SUUID,Name,Description")] BleService bleService)
         {
-            if (id != bleHub.BleHubID)
+            if (id != bleService.BleServiceID)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace MainWebApplication.Controllers
             {
                 try
                 {
-                    _context.Update(bleHub);
+                    _context.Update(bleService);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BleHubExists(bleHub.BleHubID))
+                    if (!BleServiceExists(bleService.BleServiceID))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace MainWebApplication.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(bleHub);
+            return View(bleService);
         }
 
-        // GET: BleHubs/Delete/5
+        // GET: BleServices/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace MainWebApplication.Controllers
                 return NotFound();
             }
 
-            var bleHub = await _context.BleHubs
-                .FirstOrDefaultAsync(m => m.BleHubID == id);
-            if (bleHub == null)
+            var bleService = await _context.BleService
+                .FirstOrDefaultAsync(m => m.BleServiceID == id);
+            if (bleService == null)
             {
                 return NotFound();
             }
 
-            return View(bleHub);
+            return View(bleService);
         }
 
-        // POST: BleHubs/Delete/5
+        // POST: BleServices/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var bleHub = await _context.BleHubs.FindAsync(id);
-            _context.BleHubs.Remove(bleHub);
+            var bleService = await _context.BleService.FindAsync(id);
+            _context.BleService.Remove(bleService);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BleHubExists(long id)
+        private bool BleServiceExists(long id)
         {
-            return _context.BleHubs.Any(e => e.BleHubID == id);
+            return _context.BleService.Any(e => e.BleServiceID == id);
         }
     }
 }

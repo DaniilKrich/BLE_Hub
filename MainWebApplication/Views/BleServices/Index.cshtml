@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MainWebApplication.Models.BleHub>
+﻿@model IEnumerable<MainWebApplication.Models.BleService>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,6 +14,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.SUUID)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -26,15 +29,18 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.SUUID)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.BleHubID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BleHubID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BleHubID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.BleServiceID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.BleServiceID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.BleServiceID">Delete</a>
             </td>
         </tr>
 }
