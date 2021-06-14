@@ -1,4 +1,4 @@
-﻿@model MainWebApplication.Models.BleHub
+﻿@model MainWebApplication.Models.BleService
 
 @{
     ViewData["Title"] = "Edit";
@@ -7,13 +7,18 @@
 
 <h1>Edit</h1>
 
-<h4>BleHub</h4>
+<h4>BleService</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="BleHubID" />
+            <input type="hidden" asp-for="BleServiceID" />
+            <div class="form-group">
+                <label asp-for="SUUID" class="control-label"></label>
+                <input asp-for="SUUID" class="form-control" />
+                <span asp-validation-for="SUUID" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />

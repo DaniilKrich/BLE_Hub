@@ -1,8 +1,11 @@
-﻿namespace MainWebApplication.Models
+﻿using System.Collections.Generic;
+
+namespace MainWebApplication.Models
 {
-    public class AnalogBleCharacteristic:Values<float>
+    public class AnalogBleCharacteristic: BleCharacteristic
     {
-        public virtual BleCharacteristic BleCharacteristic { get; set; }
+        public List<StoredValue<float>> AnalogValues { get; set; }
+
         //public double CurrentValue { get; set; }
         public Unit Unit { get; set; }
     }
