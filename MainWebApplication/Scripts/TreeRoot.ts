@@ -1,7 +1,6 @@
 ﻿class TreeRoot extends TreeElement {
 
 
-
     constructor(
         parentContainer: HTMLElement
     ) {
@@ -15,7 +14,7 @@
         this.container.className = 'nested active';
         this.nodeWrapper.appendChild(this.container);
 
-        this.OnClick = this.onClick;
+        //this.OnClick = this.onClick;
     }
 
     public Append(node: TreeElement): void {
@@ -25,15 +24,16 @@
     }
 
 
-    private onClick(this: HTMLSpanElement, ev: MouseEvent): void {
+    //private onClick(this: HTMLSpanElement, ev: MouseEvent): void {
 
-        console.log(this);
+    //    console.log(this);
 
-        //this.parentElement
-        //    .querySelector(".nested")
-        //    .classList.toggle("active");
+        
+    //    //this.parentElement
+    //    //    .querySelector(".nested")
+    //    //    .classList.toggle("active");
 
-        //this.classList.toggle("caret-down");
-    }
+    //    //this.classList.toggle("caret-down");
+    //}
 
 }

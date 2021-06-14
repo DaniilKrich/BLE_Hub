@@ -233,20 +233,13 @@ var TreeRoot = /** @class */ (function (_super) {
         _this.container = document.createElement('ul');
         _this.container.className = 'nested active';
         _this.nodeWrapper.appendChild(_this.container);
-        _this.OnClick = _this.onClick;
         return _this;
+        //this.OnClick = this.onClick;
     }
     TreeRoot.prototype.Append = function (node) {
         node.parent = this;
         this.children.push(node);
         this.container.appendChild(node.Node);
-    };
-    TreeRoot.prototype.onClick = function (ev) {
-        console.log(this);
-        //this.parentElement
-        //    .querySelector(".nested")
-        //    .classList.toggle("active");
-        //this.classList.toggle("caret-down");
     };
     return TreeRoot;
 }(TreeElement));
@@ -256,18 +249,38 @@ var Server = /** @class */ (function (_super) {
     function Server(parentContainer) {
         var _this = _super.call(this, parentContainer) || this;
         _this.Update = _this.update;
+        _this.OnClick = _this.onClick;
         return _this;
     }
     Server.prototype.update = function () {
         var bleHub = new BleHub();
         bleHub.Name = 'Концентратор 1';
         this.Append(bleHub);
-        bleHub = new BleHub();
-        bleHub.Name = 'Концентратор 2';
-        this.Append(bleHub);
-        var bleHub = new BleHub();
-        bleHub.Name = 'Концентратор 3';
-        this.Append(bleHub);
+        //bleHub = new BleHub();
+        //bleHub.Name = 'Концентратор 2';
+        //this.Append(bleHub);
+        //var bleHub: BleHub = new BleHub();
+        //bleHub.Name = 'Концентратор 3';
+        //this.Append(bleHub);
+    };
+    Server.prototype.onClick = function () {
+        console.log(this);
+        actions.innerHTML = '';
+        this.AddBleHubButton = document.createElement('div');
+        this.AddBleHubButton.className = 'Action';
+        this.AddBleHubButton.innerText = 'Добавление концентратора';
+        this.AddBleHubButton.onclick = this.AddBleHubButtonOnclick;
+        actions.append(this.AddBleHubButton);
+    };
+    Server.prototype.AddBleHubButtonOnclick = function () {
+        function reqListener(ev) {
+            interfaceZone.innerHTML = this.responseText;
+        }
+        var xhr = new XMLHttpRequest();
+        xhr.onload = reqListener;
+        xhr.open('get', '/BleHubs/Create', true);
+        xhr.send();
+        //xhr.setRequestHeader();
     };
     return Server;
 }(TreeRoot));
@@ -298,6 +311,7 @@ window.addEventListener('load', function () {
     var root = document.getElementById('Root');
     var server = new Server(root);
     server.Name = 'Сервер';
-    var actions = document.getElementById("Actions");
+    actions = document.getElementById("Actions");
+    interfaceZone = document.getElementById("Interface");
 });
 //# sourceMappingURL=site.js.map

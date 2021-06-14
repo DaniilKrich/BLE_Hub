@@ -1,5 +1,9 @@
-﻿window.addEventListener('load', function (): void {
+﻿declare var actions: HTMLDivElement;
+declare var interfaceZone: HTMLDivElement;
+
+window.addEventListener('load', function (): void {
     console.log('Document.load');
+
 
     //var button: HTMLButtonElement = document.getElementById('mybtn') as HTMLButtonElement;
     //console.log(button);
@@ -31,8 +35,8 @@
     var root: HTMLDivElement = document.getElementById('Root') as HTMLDivElement;
     var server = new Server(root);
     server.Name = 'Сервер';
-    var actions: HTMLDivElement = document.getElementById("Actions") as HTMLDivElement;
-
+    actions = document.getElementById("Actions") as HTMLDivElement;
+    interfaceZone = document.getElementById("Interface") as HTMLDivElement;
 
     
 
