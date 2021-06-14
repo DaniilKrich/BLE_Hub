@@ -19,7 +19,7 @@ class TreeNode extends TreeElement {
 
         var t: TreeNode = this;
 
-        this.OnClick = () => t.onClick();
+        //this.OnClick = () => t.onClick();
     }
 
 
@@ -31,10 +31,10 @@ class TreeNode extends TreeElement {
         this.container.appendChild(node.Node);
     }
 
-    private onClick(): void {
-        this.container.classList.toggle("active");
-        this.title.classList.toggle("caret-down");
-    }
+    //private onClick(): void {
+    //    this.container.classList.toggle("active");
+    //    this.title.classList.toggle("caret-down");
+    //}
 
 
 
