@@ -4,13 +4,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MainWebApplication.Models
 {
-    public class DigitalBleCharacteristic:BleCharacteristic 
+    public class DigitalBleCharacteristic : BleCharacteristic
     {
-        public List<StoredValue<bool>> DigitalValues { get; set; }
+        public List<DigitalValue> DigitalValues { get; set; }
 
 
 
-  //      public bool CurrentValue { get; set; }
+        //      public bool CurrentValue { get; set; }
 
     }
 

@@ -12,8 +12,11 @@ namespace MainWebApplication.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long BleCharacteristicID { get; set; }
 
+        [ForeignKey("BleService")]
+        public long BleServiceID { get; set; }
 
-        [ForeignKey("BleServiceID")]
+        public string Discriminator { get; set; }
+
         public virtual BleService BleService { get; set; }
 
         public Guid CUUID { get; set; }

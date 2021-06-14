@@ -9,8 +9,11 @@ namespace MainWebApplication.Models
 {
     public class StoredValue<T> 
     {
-        [ForeignKey("BleCharacteristicID")]
         public virtual BleCharacteristic BleCharacteristic { get; set; }
+
+
+        [ForeignKey("BleCharacteristic")]
+        public long BleCharacteristicID { get; set; }
 
 
         /// <summary>

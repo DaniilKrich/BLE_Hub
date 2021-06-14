@@ -4,14 +4,16 @@ using MainWebApplication.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MainWebApplication.Migrations
 {
     [DbContext(typeof(MainWebApplicationContext))]
-    partial class MainWebApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20210614170833_fixes")]
+    partial class fixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

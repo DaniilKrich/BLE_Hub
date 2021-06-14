@@ -43,6 +43,14 @@ namespace MainWebApplication.Data
 
         public DbSet<MainWebApplication.Models.BleService> BleService { get; set; }
 
+        public DbSet<MainWebApplication.Models.AnalogBleCharacteristic> AnalogBleCharacteristic { get; set; }
+
+        public DbSet<MainWebApplication.Models.DigitalBleCharacteristic> DigitalBleCharacteristic { get; set; }
+
+        public DbSet<MainWebApplication.Models.AnalogValue> AnalogValue { get; set; }
+
+        public DbSet<MainWebApplication.Models.DigitalValue> DigitalValue { get; set; }
+
 
     }
 }
