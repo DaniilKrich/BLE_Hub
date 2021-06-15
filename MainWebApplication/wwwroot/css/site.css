@@ -200,6 +200,12 @@ ul {
     cursor: pointer;
 }
 
+.Clickable {
+    cursor: pointer;
+}
+
+
+
 .hub {
 }
 
@@ -208,7 +214,9 @@ ul {
     border: 1px solid gray;
     text-align: center;
     padding: 10px;
+    cursor: pointer;
     margin: 1px;
+    background-color: lavender;
 }
 
 

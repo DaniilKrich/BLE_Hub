@@ -17,7 +17,8 @@ var TreeElement = /** @class */ (function () {
     function TreeElement() {
         this.title = document.createElement('span');
         // <span class="caret caret-down" > Сервер < /span>
-        this.title = document.createElement('span');
+        //this.title = <HTMLSpanElement>document.createElement('span');
+        this.title.classList.add('Clickable');
     }
     Object.defineProperty(TreeElement.prototype, "Node", {
         /** li element to insert into parent ul*/
@@ -98,13 +99,17 @@ var TreeNode = /** @class */ (function (_super) {
         _this.container.className = 'nested';
         _this.nodeWrapper.appendChild(_this.container);
         var t = _this;
+        _this.OnClick = function () { return t.onClick(); };
         return _this;
-        //this.OnClick = () => t.onClick();
     }
     TreeNode.prototype.Append = function (node) {
         node.parent = this;
         this.children.push(node);
         this.container.appendChild(node.Node);
+    };
+    TreeNode.prototype.onClick = function () {
+        this.container.classList.toggle("active");
+        this.title.classList.toggle("caret-down");
     };
     return TreeNode;
 }(TreeElement));
@@ -114,7 +119,7 @@ var BleHub = /** @class */ (function (_super) {
     function BleHub() {
         var _this = _super.call(this) || this;
         _this.Update = _this.update;
-        _this.OnClick = _this.onClick;
+        _this.OnClick = _this.showActions;
         return _this;
     }
     BleHub.prototype.update = function () {
@@ -128,21 +133,21 @@ var BleHub = /** @class */ (function (_super) {
         //bleNode.Name = 'Полевое устройство 3';
         //this.Append(bleNode);
     };
-    BleHub.prototype.onClick = function () {
+    BleHub.prototype.showActions = function () {
         console.log(this);
         actions.innerHTML = '';
         //addnodesbutton
-        this.ScunBleEnvButton = document.createElement('div');
-        this.ScunBleEnvButton.className = 'Action';
-        this.ScunBleEnvButton.innerText = 'Просканировать окружение';
-        this.ScunBleEnvButton.onclick = this.ScunBleEnvButtonOnclick;
-        actions.append(this.ScunBleEnvButton);
+        this.ScanBleEnvButton = document.createElement('div');
+        this.ScanBleEnvButton.className = 'Action';
+        this.ScanBleEnvButton.innerText = 'Просканировать окружение';
+        this.ScanBleEnvButton.onclick = this.ScanBleEnvButtonOnclick;
+        actions.append(this.ScanBleEnvButton);
         //
-        this.ScunBleResultButton = document.createElement('div');
-        this.ScunBleResultButton.className = 'Action';
-        this.ScunBleResultButton.innerText = 'Доступные полевые устройства';
-        this.ScunBleResultButton.onclick = this.ScunBleResultButtonOnclick;
-        actions.append(this.ScunBleResultButton);
+        this.ScanBleResultButton = document.createElement('div');
+        this.ScanBleResultButton.className = 'Action';
+        this.ScanBleResultButton.innerText = 'Доступные полевые устройства';
+        this.ScanBleResultButton.onclick = this.ScanBleResultButtonOnclick;
+        actions.append(this.ScanBleResultButton);
         //
         this.BleScriptButton = document.createElement('div');
         this.BleScriptButton.className = 'Action';
@@ -156,10 +161,10 @@ var BleHub = /** @class */ (function (_super) {
         this.NodeStatisticsButton.onclick = this.NodeStatisticsButtonOnclick;
         actions.append(this.NodeStatisticsButton);
         //
-        this.container.classList.toggle("active");
-        this.title.classList.toggle("caret-down");
+        //this.container.classList.toggle("active");
+        //this.title.classList.toggle("caret-down");
     };
-    BleHub.prototype.ScunBleEnvButtonOnclick = function () {
+    BleHub.prototype.ScanBleEnvButtonOnclick = function () {
         function reqListener(ev) {
             interfaceZone.innerHTML = this.responseText;
         }
@@ -169,7 +174,7 @@ var BleHub = /** @class */ (function (_super) {
         xhr.send();
         //xhr.setRequestHeader();
     };
-    BleHub.prototype.ScunBleResultButtonOnclick = function () {
+    BleHub.prototype.ScanBleResultButtonOnclick = function () {
         function reqListener(ev) {
             interfaceZone.innerHTML = this.responseText;
         }
@@ -297,13 +302,20 @@ var TreeRoot = /** @class */ (function (_super) {
         _this.container = document.createElement('ul');
         _this.container.className = 'nested active';
         _this.nodeWrapper.appendChild(_this.container);
+        _this.OnClick = _this.onClick;
         return _this;
-        //this.OnClick = this.onClick;
     }
     TreeRoot.prototype.Append = function (node) {
         node.parent = this;
         this.children.push(node);
         this.container.appendChild(node.Node);
+    };
+    TreeRoot.prototype.onClick = function (ev) {
+        console.log(this);
+        //this.parentElement
+        //    .querySelector(".nested")
+        //    .classList.toggle("active");
+        //this.classList.toggle("caret-down");
     };
     return TreeRoot;
 }(TreeElement));
@@ -312,8 +324,13 @@ var Server = /** @class */ (function (_super) {
     __extends(Server, _super);
     function Server(parentContainer) {
         var _this = _super.call(this, parentContainer) || this;
+        _this.AddBleHubButton = document.createElement('div');
+        _this.AddBleHubButton.className = 'Action';
+        _this.AddBleHubButton.classList.add('Clickable');
+        _this.AddBleHubButton.innerText = 'Добавление концентратора';
+        _this.AddBleHubButton.onclick = _this.AddBleHubButtonOnclick;
         _this.Update = _this.update;
-        _this.OnClick = _this.onClick;
+        _this.OnClick = function () { return _this.showActions(); };
         return _this;
     }
     Server.prototype.update = function () {
@@ -327,13 +344,9 @@ var Server = /** @class */ (function (_super) {
         //bleHub.Name = 'Концентратор 3';
         //this.Append(bleHub);
     };
-    Server.prototype.onClick = function () {
+    Server.prototype.showActions = function () {
         console.log(this);
         actions.innerHTML = '';
-        this.AddBleHubButton = document.createElement('div');
-        this.AddBleHubButton.className = 'Action';
-        this.AddBleHubButton.innerText = 'Добавление концентратора';
-        this.AddBleHubButton.onclick = this.AddBleHubButtonOnclick;
         actions.append(this.AddBleHubButton);
     };
     Server.prototype.AddBleHubButtonOnclick = function () {

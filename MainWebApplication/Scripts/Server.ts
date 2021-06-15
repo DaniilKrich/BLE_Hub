@@ -1,7 +1,7 @@
 ﻿/// <reference path="TreeRoot.ts" />
 
 class Server extends TreeRoot {
-    private AddBleHubButton: HTMLDivElement;
+    private AddBleHubButton: HTMLDivElement = document.createElement('div') as HTMLDivElement;
 
 
     constructor(
@@ -9,11 +9,13 @@ class Server extends TreeRoot {
     ) {
         super(parentContainer);
 
+        this.AddBleHubButton.className = 'Action';
+        this.AddBleHubButton.classList.add('Clickable');
+        this.AddBleHubButton.innerText = 'Добавление концентратора';
+        this.AddBleHubButton.onclick = this.AddBleHubButtonOnclick;
+
         this.Update = this.update;
-
-       
-        this.OnClick = this.onClick;
-
+        this.OnClick = ()=> this.showActions();
     }
 
     private update(): void {
@@ -31,13 +33,9 @@ class Server extends TreeRoot {
         //this.Append(bleHub);
     }
 
-    private onClick(): void {
+    private showActions(): void {
         console.log(this);
         actions.innerHTML = '';
-        this.AddBleHubButton = document.createElement('div') as HTMLDivElement;
-        this.AddBleHubButton.className = 'Action';
-        this.AddBleHubButton.innerText = 'Добавление концентратора';
-        this.AddBleHubButton.onclick = this.AddBleHubButtonOnclick;
         actions.append(this.AddBleHubButton);
     }
 

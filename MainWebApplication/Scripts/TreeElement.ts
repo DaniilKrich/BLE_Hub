@@ -2,8 +2,7 @@
     public parent?: TreeElement;
     protected children?: TreeElement[];
     protected container?: HTMLUListElement;
-    protected title: HTMLSpanElement =
-        <HTMLSpanElement>document.createElement('span');
+    protected title: HTMLSpanElement = document.createElement('span') as HTMLSpanElement;
 
     protected nodeWrapper: HTMLElement;
 
@@ -14,7 +13,8 @@
 
     constructor() {
         // <span class="caret caret-down" > Сервер < /span>
-        this.title = <HTMLSpanElement>document.createElement('span');
+        //this.title = <HTMLSpanElement>document.createElement('span');
+        this.title.classList.add('Clickable');
     }
 
     public set Name(name: string) {

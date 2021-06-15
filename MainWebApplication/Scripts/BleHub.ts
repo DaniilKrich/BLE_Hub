@@ -2,8 +2,8 @@
 
 class BleHub extends TreeNode {
 
-    private ScunBleEnvButton: HTMLDivElement;
-    private ScunBleResultButton: HTMLDivElement;
+    private ScanBleEnvButton: HTMLDivElement;
+    private ScanBleResultButton: HTMLDivElement;
     private BleScriptButton: HTMLDivElement;
     private NodeStatisticsButton: HTMLDivElement;
 
@@ -12,7 +12,7 @@ class BleHub extends TreeNode {
         super()
         this.Update = this.update;
 
-        this.OnClick = this.onClick;
+        this.OnClick = this.showActions;
 
     }
 
@@ -30,21 +30,21 @@ class BleHub extends TreeNode {
         //this.Append(bleNode);
     }
 
-    private onClick(): void {
+    private showActions(): void {
         console.log(this);
         actions.innerHTML = '';
         //addnodesbutton
-        this.ScunBleEnvButton = document.createElement('div') as HTMLDivElement;
-        this.ScunBleEnvButton.className = 'Action';
-        this.ScunBleEnvButton.innerText = 'Просканировать окружение';
-        this.ScunBleEnvButton.onclick = this.ScunBleEnvButtonOnclick;
-        actions.append(this.ScunBleEnvButton);
+        this.ScanBleEnvButton = document.createElement('div') as HTMLDivElement;
+        this.ScanBleEnvButton.className = 'Action';
+        this.ScanBleEnvButton.innerText = 'Просканировать окружение';
+        this.ScanBleEnvButton.onclick = this.ScanBleEnvButtonOnclick;
+        actions.append(this.ScanBleEnvButton);
         //
-        this.ScunBleResultButton = document.createElement('div') as HTMLDivElement;
-        this.ScunBleResultButton.className = 'Action';
-        this.ScunBleResultButton.innerText = 'Доступные полевые устройства';
-        this.ScunBleResultButton.onclick = this.ScunBleResultButtonOnclick;
-        actions.append(this.ScunBleResultButton);
+        this.ScanBleResultButton = document.createElement('div') as HTMLDivElement;
+        this.ScanBleResultButton.className = 'Action';
+        this.ScanBleResultButton.innerText = 'Доступные полевые устройства';
+        this.ScanBleResultButton.onclick = this.ScanBleResultButtonOnclick;
+        actions.append(this.ScanBleResultButton);
         //
         this.BleScriptButton = document.createElement('div') as HTMLDivElement;
         this.BleScriptButton.className = 'Action';
@@ -58,11 +58,11 @@ class BleHub extends TreeNode {
         this.NodeStatisticsButton.onclick = this.NodeStatisticsButtonOnclick;
         actions.append(this.NodeStatisticsButton);
         //
-        this.container.classList.toggle("active");
-        this.title.classList.toggle("caret-down");
+        //this.container.classList.toggle("active");
+        //this.title.classList.toggle("caret-down");
     }
 
-    private ScunBleEnvButtonOnclick(): void {
+    private ScanBleEnvButtonOnclick(): void {
         function reqListener(this: XMLHttpRequest, ev: ProgressEvent<EventTarget>) {
             interfaceZone.innerHTML = this.responseText;
         }
@@ -74,7 +74,7 @@ class BleHub extends TreeNode {
         //xhr.setRequestHeader();
     }
 
-    private ScunBleResultButtonOnclick(): void {
+    private ScanBleResultButtonOnclick(): void {
         function reqListener(this: XMLHttpRequest, ev: ProgressEvent<EventTarget>) {
             interfaceZone.innerHTML = this.responseText;
         }
