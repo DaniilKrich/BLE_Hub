@@ -17,6 +17,15 @@
         this.title.classList.add('Clickable');
     }
 
+    public set ID(id: number) {
+        this.title.attributes['dbid'] = id;
+    }
+    public get ID(): number {
+        return this.title.attributes['dbid'];
+    }
+
+
+
     public set Name(name: string) {
         if (this.IsNullOrWhiteSpace(this.title.textContent)) {
             if (this.Update)

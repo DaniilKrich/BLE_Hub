@@ -20,11 +20,11 @@
 #define GCC_NOT_5_2_0 0
 #define WITH_POSIX
 #define F_CPU 240000000L
-#define ARDUINO 108010
+#define ARDUINO 108013
 #define ARDUINO_ESP32_DEV
 #define ARDUINO_ARCH_ESP32
 #define ESP32
-#define CORE_DEBUG_LEVEL 0
+#define CORE_DEBUG_LEVEL 2
 #define __cplusplus 201103L
 
 #define _Pragma(x)

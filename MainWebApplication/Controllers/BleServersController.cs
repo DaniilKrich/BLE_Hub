@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MainWebApplication.Data;
 using MainWebApplication.Models;
+using System.Threading;
 
 namespace MainWebApplication.Controllers
 {
@@ -24,6 +25,35 @@ namespace MainWebApplication.Controllers
         {
             return View(await _context.BleServer.ToListAsync());
         }
+
+        public JsonResult GetScanResults()
+        {
+            var env = new List<BleServer>
+            {
+                new BleServer()
+                {
+                    BleAdr = new byte[] {0xc4, 0x4f, 0x33, 0x7f, 0xcb, 0x9b } ,
+                    Name = "Полевое устройство c4:4f:33:7f:cb:9b"
+                },
+                new BleServer()
+                {
+                    BleAdr = new byte[] {0x54, 0xef, 0xa7, 0xd1, 0x23, 0x19 } ,
+                    Name = "Beacon"
+                },
+                new BleServer()
+                {
+                    BleAdr = new byte[] {0xd1, 0x61, 0x83, 0x9f, 0xa4, 0x20 } ,
+                    Name = ""
+                }
+            };
+
+           Thread.Sleep(3000);
+
+            //return await _context.BleServer.ToListAsync();
+            return  Json(env);
+        }
+
+
 
         // GET: BleServers/Details/5
         public async Task<IActionResult> Details(long? id)

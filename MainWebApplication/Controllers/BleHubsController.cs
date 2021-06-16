@@ -25,6 +25,14 @@ namespace MainWebApplication.Controllers
             return View(await _context.BleHubs.ToListAsync());
         }
 
+        public async Task<List<BleHub>> GetList()
+        {
+            return await _context.BleHubs.ToListAsync();
+        }
+
+
+
+
         // GET: BleHubs/Details/5
         public async Task<IActionResult> Details(long? id)
         {
@@ -60,10 +68,25 @@ namespace MainWebApplication.Controllers
             {
                 _context.Add(bleHub);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+               }
             return View(bleHub);
         }
+
+        [HttpPost]
+        public async Task<int> CreateFnc([Bind("Name")] BleHub bleHub)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(bleHub);
+              return  await _context.SaveChangesAsync();
+            }
+
+            return -1;
+        }
+
+
+
+
 
         // GET: BleHubs/Edit/5
         public async Task<IActionResult> Edit(long? id)

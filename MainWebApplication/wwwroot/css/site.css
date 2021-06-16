@@ -235,6 +235,22 @@ ul {
     }
 
 
+td, th {
+    border-color: gray;
+    border-width: 1px;
+    border-style: solid;
+    margin:0;
+    text-align:center;
+    padding:2px;
+    vertical-align:central;
+}
+
+table {
+    margin: 2px;
+}
+
+
+
 
 /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
 .caret-down::before {

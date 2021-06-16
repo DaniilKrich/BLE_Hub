@@ -1,0 +1,39 @@
+﻿@model IEnumerable<MainWebApplication.Models.AnalogValue>
+
+@*@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Время
+            </th>
+            <th>
+                Значение
+            </th>
+            <th>
+                Ед. изм.
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Value)
+            </td>
+            <td>
+                °C
+                @*@Html.DisplayFor(modelItem => ((AnalogBleCharacteristic)item.BleCharacteristic).Unit)*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

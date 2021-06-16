@@ -26,6 +26,17 @@ namespace MainWebApplication.Controllers
             return View(await mainWebApplicationContext.ToListAsync());
         }
 
+        public async Task<IActionResult> GetValues(long BleCharacteristicID)
+        {
+            var values = _context.AnalogValue
+                .Where(v=>v.BleCharacteristicID == BleCharacteristicID);
+            return View(await values.ToListAsync());
+        }
+
+
+
+
+
         // GET: AnalogValues/Details/5
         public async Task<IActionResult> Details(DateTime? id)
         {

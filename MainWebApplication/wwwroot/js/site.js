@@ -28,6 +28,16 @@ var TreeElement = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(TreeElement.prototype, "ID", {
+        get: function () {
+            return this.title.attributes['dbid'];
+        },
+        set: function (id) {
+            this.title.attributes['dbid'] = id;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(TreeElement.prototype, "Name", {
         get: function () {
             return this.title.textContent;
@@ -116,10 +126,32 @@ var TreeNode = /** @class */ (function (_super) {
 /// <reference path="TreeNode.ts" />
 var BleHub = /** @class */ (function (_super) {
     __extends(BleHub, _super);
-    function BleHub() {
+    // [{"bleHubID":1,"name":"test","description":"test description","bleServers":null}]
+    function BleHub(json) {
         var _this = _super.call(this) || this;
+        if (json != null) {
+            _this.Name = json.name;
+            _this.ID = json.bleHubID;
+            _this.description = json.description;
+        }
         _this.Update = _this.update;
-        _this.OnClick = _this.showActions;
+        _this.ScanBleEnvButton = document.createElement('div');
+        _this.ScanBleEnvButton.className = 'Action';
+        _this.ScanBleEnvButton.innerText = 'Просканировать окружение';
+        _this.ScanBleEnvButton.onclick = function () { return _this.ScanBleEnvButtonOnclick(); };
+        _this.ScanBleResultButton = document.createElement('div');
+        _this.ScanBleResultButton.className = 'Action';
+        _this.ScanBleResultButton.innerText = 'Доступные полевые устройства';
+        _this.ScanBleResultButton.onclick = _this.ScanBleResultButtonOnclick;
+        _this.BleScriptButton = document.createElement('div');
+        _this.BleScriptButton.className = 'Action';
+        _this.BleScriptButton.innerText = 'Сценарии';
+        _this.BleScriptButton.onclick = _this.BleScriptButtonOnclick;
+        _this.NodeStatisticsButton = document.createElement('div');
+        _this.NodeStatisticsButton.className = 'Action';
+        _this.NodeStatisticsButton.innerText = 'Статистика';
+        _this.NodeStatisticsButton.onclick = function () { return _this.NodeStatisticsButtonOnclick(); };
+        _this.OnClick = function () { return _this.showActions(); };
         return _this;
     }
     BleHub.prototype.update = function () {
@@ -136,41 +168,92 @@ var BleHub = /** @class */ (function (_super) {
     BleHub.prototype.showActions = function () {
         console.log(this);
         actions.innerHTML = '';
+        interfaceZone.innerHTML = '';
+        var header = document.createElement('h1');
+        header.textContent = this.Name;
+        actions.append(header);
         //addnodesbutton
-        this.ScanBleEnvButton = document.createElement('div');
-        this.ScanBleEnvButton.className = 'Action';
-        this.ScanBleEnvButton.innerText = 'Просканировать окружение';
-        this.ScanBleEnvButton.onclick = this.ScanBleEnvButtonOnclick;
         actions.append(this.ScanBleEnvButton);
         //
-        this.ScanBleResultButton = document.createElement('div');
-        this.ScanBleResultButton.className = 'Action';
-        this.ScanBleResultButton.innerText = 'Доступные полевые устройства';
-        this.ScanBleResultButton.onclick = this.ScanBleResultButtonOnclick;
         actions.append(this.ScanBleResultButton);
         //
-        this.BleScriptButton = document.createElement('div');
-        this.BleScriptButton.className = 'Action';
-        this.BleScriptButton.innerText = 'Сценарии';
-        this.BleScriptButton.onclick = this.BleScriptButtonOnclick;
         actions.append(this.BleScriptButton);
         //
-        this.NodeStatisticsButton = document.createElement('div');
-        this.NodeStatisticsButton.className = 'Action';
-        this.NodeStatisticsButton.innerText = 'Статистика';
-        this.NodeStatisticsButton.onclick = this.NodeStatisticsButtonOnclick;
         actions.append(this.NodeStatisticsButton);
         //
         //this.container.classList.toggle("active");
         //this.title.classList.toggle("caret-down");
     };
-    BleHub.prototype.ScanBleEnvButtonOnclick = function () {
-        function reqListener(ev) {
-            interfaceZone.innerHTML = this.responseText;
+    BleHub.prototype.ScanBleEnvReqListener = function (req) {
+        /*
+        [
+            {
+                "bleServerID":0,
+                "bleHub":null,
+                "bleServices":null,
+                "bleAdr":"C4:4F:33:7F:CB:9B",
+                "name":"\u041F\u043E\u043B\u0435\u0432\u043E\u0435 \u0443\u0441\u0442\u0440\u043E\u0439\u0441\u0442\u0432\u043E c4:4f:33:7f:cb:9b"
+            },
+            {
+                "bleServerID":0,
+                "bleHub":null,
+                "bleServices":null,
+                "bleAdr":"54:EF:A7:D1:23:19",
+                "name":"Beacon"
+            },
+            {
+                "bleServerID":0,
+                "bleHub":null,
+                "bleServices":null,
+                "bleAdr":"D1:61:83:9F:A4:20",
+                "name":""
+            }
+        ]
+         
+          */
+        var _this = this;
+        var tbl = document.createElement('table');
+        var header = document.createElement('tr');
+        var hmac = document.createElement('th');
+        hmac.textContent = 'BLE MAC адрес';
+        header.appendChild(hmac);
+        var hname = document.createElement('th');
+        hname.textContent = 'Имя';
+        header.appendChild(hname);
+        var hadd = document.createElement('th');
+        hadd.textContent = 'Добавить';
+        header.appendChild(hadd);
+        tbl.appendChild(header);
+        var servers = JSON.parse(req.responseText);
+        for (var i in servers) {
+            var srv = servers[i];
+            var row = document.createElement('tr');
+            var mac = document.createElement('td');
+            mac.innerText = srv.bleAdr;
+            row.appendChild(mac);
+            var name = document.createElement('td');
+            name.innerText = srv.name;
+            row.appendChild(name);
+            var addbtn = document.createElement('td');
+            var btn = document.createElement('div');
+            btn.className = 'Action';
+            btn.classList.add('Clickable');
+            btn.innerText = '+';
+            btn.onclick = function () { return _this.AddServer(srv); };
+            addbtn.appendChild(btn);
+            row.appendChild(addbtn);
+            tbl.appendChild(row);
         }
+        interfaceZone.appendChild(tbl);
+    };
+    BleHub.prototype.AddServer = function (srv) {
+    };
+    BleHub.prototype.ScanBleEnvButtonOnclick = function () {
+        var _this = this;
+        interfaceZone.innerHTML = '';
         var xhr = new XMLHttpRequest();
-        xhr.onload = reqListener;
-        xhr.open('get', '', true);
+        xhr.onload = function () { return _this.ScanBleEnvReqListener(xhr); };
+        xhr.open('get', '/BleServers/GetScanResults', true);
         xhr.send();
         //xhr.setRequestHeader();
     };
@@ -191,16 +274,17 @@ var BleHub = /** @class */ (function (_super) {
         var xhr = new XMLHttpRequest();
         xhr.onload = reqListener;
         xhr.open('get', '', true);
-        xhr.send();
+        //xhr.send();
         //xhr.setRequestHeader();
     };
+    BleHub.prototype.NodeStatisticsButtonListener = function (req) {
+        interfaceZone.innerHTML = req.responseText;
+    };
     BleHub.prototype.NodeStatisticsButtonOnclick = function () {
-        function reqListener(ev) {
-            interfaceZone.innerHTML = this.responseText;
-        }
+        var _this = this;
         var xhr = new XMLHttpRequest();
-        xhr.onload = reqListener;
-        xhr.open('get', '', true);
+        xhr.onload = function () { return _this.NodeStatisticsButtonListener(xhr); };
+        xhr.open('get', '/AnalogValues/getvalues?BleCharacteristicID=2', true);
         xhr.send();
         //xhr.setRequestHeader();
     };
@@ -325,18 +409,60 @@ var Server = /** @class */ (function (_super) {
     function Server(parentContainer) {
         var _this = _super.call(this, parentContainer) || this;
         _this.AddBleHubButton = document.createElement('div');
+        _this.AddBleHubForm = document.createElement('form');
         _this.AddBleHubButton.className = 'Action';
         _this.AddBleHubButton.classList.add('Clickable');
         _this.AddBleHubButton.innerText = 'Добавление концентратора';
-        _this.AddBleHubButton.onclick = _this.AddBleHubButtonOnclick;
+        _this.AddBleHubButton.onclick = function () { return _this.AddBleHubButtonOnclick(); };
+        // <form >
+        //    <div class="form-group">
+        //    </div>
+        //<input name="__RequestVerificationToken"
+        //type="hidden"
+        //value="CfDJ8PrUNlfFZ9tAh7ylCV1SUXOTUxRGeEysMlr1-0wggkc0CDm_oVujbo2VLfGxSmfRnkFkRwBMwzIuxHRphcLlT69xWrh_O5dUtQdunI4uBhs26IkpCNaAQpBtA8kWCj9-kzi9pYVomuU7v4s-47Wnbx0"></form>
+        _this.AddBleHubForm.innerHTML =
+            '<div class="form-group">\
+                <label class="control-label" for="Name">Сетевое имя</label>\
+                <input class="form-control" type="text" id="Name" name="Name" value="">\
+                <span class="text-danger field - validation - valid" data-valmsg-for="Name" data-valmsg-replace="true">\
+                </span>\
+            </div>\
+            <input type="submit" value="Добавить" class="btn btn-primary">';
+        //        <input type="submit" value="Добавить" class="btn btn-primary">
+        //var submit: HTMLInputElement = document.createElement('input');
+        //submit.className = 'btn';
+        //submit.classList.add('btn-primary');
+        //submit.onclick = () => this.CreateBleHub();
+        //this.AddBleHubForm.appendChild(submit);
+        var cr = function () { return _this.CreateBleHub(); };
+        _this.AddBleHubForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            cr();
+        });
         _this.Update = _this.update;
         _this.OnClick = function () { return _this.showActions(); };
         return _this;
     }
+    Server.prototype.updateReqListener = function (req) {
+        //var bleHub: BleHub = new BleHub();
+        //bleHub.Name = 'Концентратор 1';
+        //this.Append(bleHub);
+        do {
+            var tmp = this.children.pop();
+        } while (this.children.length > 0);
+        this.container.innerHTML = '';
+        var json = JSON.parse(req.response);
+        for (var hub in json) {
+            var bleHub = new BleHub(json[hub]);
+            this.Append(bleHub);
+        }
+    };
     Server.prototype.update = function () {
-        var bleHub = new BleHub();
-        bleHub.Name = 'Концентратор 1';
-        this.Append(bleHub);
+        var _this = this;
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function () { return _this.updateReqListener(xhr); };
+        xhr.open('get', '/BleHubs/GetList', true);
+        xhr.send();
         //bleHub = new BleHub();
         //bleHub.Name = 'Концентратор 2';
         //this.Append(bleHub);
@@ -347,16 +473,28 @@ var Server = /** @class */ (function (_super) {
     Server.prototype.showActions = function () {
         console.log(this);
         actions.innerHTML = '';
+        interfaceZone.innerHTML = '';
+        var header = document.createElement('h1');
+        header.textContent = this.Name;
+        actions.append(header);
         actions.append(this.AddBleHubButton);
     };
     Server.prototype.AddBleHubButtonOnclick = function () {
-        function reqListener(ev) {
-            interfaceZone.innerHTML = this.responseText;
-        }
+        interfaceZone.innerHTML = '';
+        interfaceZone.append(this.AddBleHubForm);
+    };
+    Server.prototype.CreateBleHubReqListener = function (req) {
+        interfaceZone.innerHTML = req.responseText;
+        this.Update();
+    };
+    Server.prototype.CreateBleHub = function () {
+        var _this = this;
         var xhr = new XMLHttpRequest();
-        xhr.onload = reqListener;
-        xhr.open('get', '/BleHubs/Create', true);
-        xhr.send();
+        var fd = new FormData(this.AddBleHubForm);
+        xhr.onload = function () { return _this.CreateBleHubReqListener(xhr); };
+        //action = "/BleHubs/Create" method = "post"
+        xhr.open('post', '/BleHubs/CreateFnc', true);
+        xhr.send(fd);
         //xhr.setRequestHeader();
     };
     return Server;
@@ -391,4 +529,6 @@ window.addEventListener('load', function () {
     actions = document.getElementById("Actions");
     interfaceZone = document.getElementById("Interface");
 });
+/// <reference path="IBleHub.ts" />
+/// <reference path="IBleService.ts" />
 //# sourceMappingURL=site.js.map

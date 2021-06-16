@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MainWebApplication.Models
@@ -46,7 +47,8 @@ namespace MainWebApplication.Models
 
         [MaxLength(6)]
         [MinLength(6)]
-        public byte[] BleAdr { get; } = new byte[6];
+        [JsonConverter(typeof (BleMacJsonConverter))]
+        public byte[] BleAdr { get; set; } = new byte[6];
         public string Name { get; set; }
 
 
